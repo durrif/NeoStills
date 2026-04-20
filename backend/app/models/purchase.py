@@ -26,7 +26,7 @@ class Purchase(Base, TimestampMixin):
     notes = Column(Text, nullable=True)
     purchase_date = Column(DateTime(timezone=True), nullable=True)
 
-    brewery = relationship("Distillery", back_populates="purchases")
+    distillery = relationship("Distillery", back_populates="purchases")
     items = relationship("PurchaseItem", back_populates="purchase", cascade="all, delete-orphan")
 
 

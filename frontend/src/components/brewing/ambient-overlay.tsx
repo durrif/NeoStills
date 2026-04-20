@@ -11,12 +11,12 @@ interface AmbientOverlayProps {
 const PHASE_CONFIG: Record<BrewPhase, { gradient: string; opacity: number }> = {
   planned: { gradient: "radial-gradient(ellipse at 50% 100%, #1c1c1c 0%, transparent 70%)", opacity: 0 },
   mashing: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(180,100,20,0.15) 0%, transparent 70%)", opacity: 1 },
-  lautering: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(200,160,40,0.12) 0%, transparent 70%)", opacity: 1 },
-  boiling: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(220,60,20,0.18) 0%, transparent 70%)", opacity: 1 },
-  cooling: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(40,120,200,0.15) 0%, transparent 70%)", opacity: 1 },
   fermenting: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(100,60,200,0.12) 0%, transparent 70%)", opacity: 1 },
-  conditioning: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(60,80,180,0.10) 0%, transparent 70%)", opacity: 1 },
-  packaging: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(80,160,80,0.10) 0%, transparent 70%)", opacity: 1 },
+  stripping_run: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(220,60,20,0.18) 0%, transparent 70%)", opacity: 1 },
+  spirit_run: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(200,160,40,0.15) 0%, transparent 70%)", opacity: 1 },
+  cuts_collection: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(40,180,160,0.14) 0%, transparent 70%)", opacity: 1 },
+  aging: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(120,80,40,0.12) 0%, transparent 70%)", opacity: 1 },
+  bottling: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(80,160,80,0.10) 0%, transparent 70%)", opacity: 1 },
   completed: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(255,220,80,0.10) 0%, transparent 70%)", opacity: 1 },
   aborted: { gradient: "radial-gradient(ellipse at 50% 100%, rgba(200,40,40,0.12) 0%, transparent 70%)", opacity: 1 },
 };

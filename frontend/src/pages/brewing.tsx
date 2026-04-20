@@ -29,12 +29,12 @@ import type { BrewSession, BrewPhase, Recipe, RecipeIngredient } from '@/lib/typ
 
 /* ── Utilities ─────────────────────────────────────────────────── */
 function phaseIndex(phase: BrewPhase): number {
-  const order: BrewPhase[] = ['planned', 'mashing', 'lautering', 'boiling', 'cooling', 'fermenting', 'conditioning', 'packaging', 'completed']
+  const order: BrewPhase[] = ['planned', 'mashing', 'fermenting', 'stripping_run', 'spirit_run', 'cuts_collection', 'aging', 'bottling', 'completed']
   return order.indexOf(phase)
 }
 
 function nextPhase(phase: BrewPhase): BrewPhase | undefined {
-  const order: BrewPhase[] = ['planned', 'mashing', 'lautering', 'boiling', 'cooling', 'fermenting', 'conditioning', 'packaging', 'completed']
+  const order: BrewPhase[] = ['planned', 'mashing', 'fermenting', 'stripping_run', 'spirit_run', 'cuts_collection', 'aging', 'bottling', 'completed']
   const idx = order.indexOf(phase)
   return idx < order.length - 1 ? order[idx + 1] : undefined
 }
@@ -237,8 +237,8 @@ function ActiveBrewPanel({ session }: { session: BrewSession }) {
   }
 
   const next = nextPhase(session.phase as BrewPhase)
-  const isBoilPhase = session.phase === 'boiling'
-  const boilElapsedSec = isBoilPhase ? timer.stepSeconds : 0
+  const isDistillPhase = session.phase === 'stripping_run' || session.phase === 'spirit_run'
+  const boilElapsedSec = isDistillPhase ? timer.stepSeconds : 0
 
   return (
     <div className="space-y-4">
@@ -277,7 +277,7 @@ function ActiveBrewPanel({ session }: { session: BrewSession }) {
       />
 
       {/* Hop Alert Banner (during boil) */}
-      {isBoilPhase && (
+      {isDistillPhase && (
         <HopAlertBanner
           hops={hops}
           boilElapsedSec={boilElapsedSec}
@@ -289,7 +289,7 @@ function ActiveBrewPanel({ session }: { session: BrewSession }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <DualTimer mashDurationMinutes={60} boilDurationMinutes={60} />
 
-        {isBoilPhase ? (
+        {isDistillPhase ? (
           <div className="glass-card rounded-xl border border-white/10 p-4">
             <HopSchedule
               hops={hops}
@@ -310,7 +310,7 @@ function ActiveBrewPanel({ session }: { session: BrewSession }) {
                   <Thermometer size={10} /> {t('brew_day.temperature')}
                 </p>
                 <p className="text-lg font-mono font-bold text-text-primary mt-1">
-                  {session.phase === 'mashing' ? '67°C' : session.phase === 'boiling' ? '100°C' : '—'}
+                  {session.phase === 'mashing' ? '67°C' : session.phase === 'stripping_run' ? '78°C' : session.phase === 'spirit_run' ? '65°C' : '—'}
                 </p>
               </div>
               <div className="bg-bg-elevated rounded-lg p-3 text-center">

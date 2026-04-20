@@ -53,7 +53,7 @@ class AIConversation(Base):
         cascade="all, delete-orphan",
         order_by="AIMessage.id",
     )
-    brewery: Mapped[Any] = relationship("Distillery", back_populates="conversations")
+    distillery: Mapped[Any] = relationship("Distillery", back_populates="conversations")
 
 
 class AIMessage(Base):

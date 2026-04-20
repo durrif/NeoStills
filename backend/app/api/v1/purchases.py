@@ -7,12 +7,12 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.api.deps import get_current_active_user, get_current_brewery
+from app.api.deps import get_current_active_user, get_current_distillery
 from app.core.database import get_db
 from app.models.purchase import Purchase, PurchaseItem, PurchaseStatus
 from app.models.ingredient import Ingredient
 from app.models.user import User
-from app.models.brewery import Brewery
+from app.models.brewery import Distillery
 from app.schemas.purchase import PurchaseCreate, PurchaseUpdate, PurchaseOut
 
 router = APIRouter(prefix="/purchases", tags=["purchases"])
@@ -22,7 +22,7 @@ router = APIRouter(prefix="/purchases", tags=["purchases"])
 async def list_purchases(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Purchase)
@@ -38,7 +38,7 @@ async def create_purchase(
     data: PurchaseCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     purchase = Purchase(
         id=uuid.uuid4().hex,
@@ -85,7 +85,7 @@ async def get_purchase(
     purchase_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Purchase)
@@ -104,7 +104,7 @@ async def update_purchase(
     data: PurchaseUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Purchase)
@@ -128,7 +128,7 @@ async def delete_purchase(
     purchase_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Purchase).where(Purchase.id == purchase_id, Purchase.distillery_id == distillery.id)
@@ -145,7 +145,7 @@ async def upload_invoice(
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     """Upload a PDF invoice and parse it with pdfplumber + regex."""
     if file.content_type not in ("application/pdf", "application/octet-stream"):

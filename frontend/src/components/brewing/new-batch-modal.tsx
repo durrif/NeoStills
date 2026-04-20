@@ -56,8 +56,8 @@ export function NewBatchModal({ open, onClose }: NewBatchModalProps) {
         {
           name: `${t('brew_day.batch_prefix')} ${new Date(brewDate).toLocaleDateString(i18n.language)}`,
           phase: 'planned',
-          planned_batch_liters: batchSize,
-          brew_date: brewDate,
+          wash_volume_liters: batchSize,
+          wash_date: brewDate,
         },
         {
           onSuccess: () => {

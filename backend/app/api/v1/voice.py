@@ -14,9 +14,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user, get_current_brewery, get_db
+from app.api.deps import get_current_user, get_current_distillery, get_db
 from app.models.ingredient import Ingredient, IngredientCategory
-from app.models.brewery import Brewery
+from app.models.brewery import Distillery
 
 logger = logging.getLogger(__name__)
 
@@ -161,7 +161,7 @@ def parse_command(text: str, lang: str) -> tuple[VoiceCommandResponse | None, st
 
 
 async def _handle_inventory_query(
-    intent_key: str, db: AsyncSession, brewery: Brewery
+    intent_key: str, db: AsyncSession, distillery: Distillery
 ) -> VoiceCommandResponse:
     """Handle inventory intents that require DB access."""
     brewery_id = distillery.id
@@ -268,7 +268,7 @@ async def _handle_inventory_query(
 async def process_voice_command(
     req: VoiceCommandRequest,
     current_user=Depends(get_current_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ) -> VoiceCommandResponse:
     """

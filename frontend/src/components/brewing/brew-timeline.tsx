@@ -7,23 +7,23 @@ import { cn } from "@/lib/utils";
 export type BrewPhase =
   | "planned"
   | "mashing"
-  | "lautering"
-  | "boiling"
-  | "cooling"
   | "fermenting"
-  | "conditioning"
-  | "packaging"
+  | "stripping_run"
+  | "spirit_run"
+  | "cuts_collection"
+  | "aging"
+  | "bottling"
   | "completed"
   | "aborted";
 
 const PHASE_KEYS: { key: BrewPhase; emoji: string }[] = [
   { key: "mashing", emoji: "🌡️" },
-  { key: "lautering", emoji: "🪣" },
-  { key: "boiling", emoji: "🔥" },
-  { key: "cooling", emoji: "❄️" },
   { key: "fermenting", emoji: "🧫" },
-  { key: "conditioning", emoji: "🍺" },
-  { key: "packaging", emoji: "📦" },
+  { key: "stripping_run", emoji: "🔥" },
+  { key: "spirit_run", emoji: "💧" },
+  { key: "cuts_collection", emoji: "✂️" },
+  { key: "aging", emoji: "🪣" },
+  { key: "bottling", emoji: "🍶" },
   { key: "completed", emoji: "✅" },
 ];
 

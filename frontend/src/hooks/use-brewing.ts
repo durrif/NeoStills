@@ -15,7 +15,7 @@ export function useBrewSessions(phase?: string) {
     queryKey: [...SESSIONS_KEY, phase, breweryId],
     queryFn: () => {
       const qs = phase ? `?phase_filter=${phase}` : "";
-      return api.get<BrewSession[]>(`/v1/brewing${qs}`);
+      return api.get<BrewSession[]>(`/v1/distillation${qs}`);
     },
     enabled: !!breweryId,
     staleTime: 15_000,
@@ -26,7 +26,7 @@ export function useActiveSession() {
   const breweryId = useAuthStore((s) => s.brewery?.id);
   return useQuery({
     queryKey: [...SESSIONS_KEY, "active", breweryId],
-    queryFn: () => api.get<BrewSession | null>("/v1/brewing/active"),
+    queryFn: () => api.get<BrewSession | null>("/v1/distillation/active"),
     enabled: !!breweryId,
     staleTime: 10_000,
   });
@@ -35,7 +35,7 @@ export function useActiveSession() {
 export function useBrewSession(sessionId: string | undefined) {
   return useQuery({
     queryKey: [...SESSIONS_KEY, sessionId],
-    queryFn: () => api.get<BrewSession>(`/v1/brewing/${sessionId}`),
+    queryFn: () => api.get<BrewSession>(`/v1/distillation/${sessionId}`),
     enabled: !!sessionId,
     staleTime: 10_000,
   });
@@ -45,7 +45,7 @@ export function useCreateSession() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: Partial<BrewSession>) =>
-      api.post<BrewSession>("/v1/brewing", data),
+      api.post<BrewSession>("/v1/distillation", data),
     onSuccess: () => qc.invalidateQueries({ queryKey: SESSIONS_KEY }),
   });
 }
@@ -54,7 +54,7 @@ export function useUpdateSession() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...data }: Partial<BrewSession> & { id: number }) =>
-      api.patch<BrewSession>(`/v1/brewing/${id}`, data),
+      api.patch<BrewSession>(`/v1/distillation/${id}`, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: SESSIONS_KEY }),
   });
 }
@@ -71,7 +71,7 @@ export function useAdvancePhase() {
       phase: string;
       notes?: string;
     }) =>
-      api.post<BrewSession>(`/v1/brewing/${sessionId}/advance`, {
+      api.post<BrewSession>(`/v1/distillation/${sessionId}/advance`, {
         phase,
         notes,
       }),
@@ -82,7 +82,7 @@ export function useAdvancePhase() {
 export function useDeleteSession() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.delete(`/v1/brewing/${id}`),
+    mutationFn: (id: string) => api.delete(`/v1/distillation/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: SESSIONS_KEY }),
   });
 }

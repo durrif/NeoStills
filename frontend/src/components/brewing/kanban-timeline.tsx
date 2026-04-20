@@ -1,15 +1,15 @@
-// src/components/brewing/kanban-timeline.tsx — NeoStills v3 Brew Day Kanban
+// src/components/brewing/kanban-timeline.tsx — NeoStills v2 Distillation Kanban
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Check, ThermometerSun, Flame, Snowflake, FlaskConical,
-  Timer, ChevronRight, Droplets, GripHorizontal
+  Check, ThermometerSun, FlaskConical, Flame,
+  Timer, ChevronRight, Droplets, Package, Beaker
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BrewPhase } from '@/lib/types'
 
-/* ── Brew-day phases (only active-brew phases) ──────────────────── */
+/* ── Distillation phases ──────────────────────────────────────── */
 export interface PhaseConfig {
   key: BrewPhase
   label: string
@@ -18,14 +18,19 @@ export interface PhaseConfig {
   bgColor: string
   defaultMinutes: number
   defaultTempC?: number
+  safetyNote?: string
 }
 
 export const BREW_PHASES: PhaseConfig[] = [
-  { key: 'mashing',   label: 'Maceración', icon: ThermometerSun, color: 'text-amber-400',  bgColor: 'bg-amber-400/10',  defaultMinutes: 60, defaultTempC: 67 },
-  { key: 'lautering', label: 'Filtrado',    icon: Droplets,      color: 'text-yellow-300', bgColor: 'bg-yellow-300/10', defaultMinutes: 20 },
-  { key: 'boiling',   label: 'Cocción',     icon: Flame,         color: 'text-orange-400', bgColor: 'bg-orange-400/10', defaultMinutes: 60, defaultTempC: 100 },
-  { key: 'cooling',   label: 'Enfriado',    icon: Snowflake,     color: 'text-cyan-400',   bgColor: 'bg-cyan-400/10',   defaultMinutes: 30, defaultTempC: 20 },
-  { key: 'fermenting',label: 'Inoculación', icon: FlaskConical,  color: 'text-green-400',  bgColor: 'bg-green-400/10',  defaultMinutes: 0 },
+  { key: 'mashing',        label: 'Preparación del wash', icon: ThermometerSun, color: 'text-amber-400',  bgColor: 'bg-amber-400/10',  defaultMinutes: 90,  defaultTempC: 64 },
+  { key: 'fermenting',     label: 'Fermentación',         icon: FlaskConical,   color: 'text-green-400',  bgColor: 'bg-green-400/10',  defaultMinutes: 0 },
+  { key: 'stripping_run',  label: 'Stripping run',        icon: Flame,          color: 'text-orange-400', bgColor: 'bg-orange-400/10', defaultMinutes: 180, defaultTempC: 85,
+    safetyNote: '⚠️ Ventilación obligatoria' },
+  { key: 'spirit_run',     label: 'Spirit run',           icon: Flame,          color: 'text-red-400',    bgColor: 'bg-red-400/10',    defaultMinutes: 240, defaultTempC: 78,
+    safetyNote: '⚠️ Descartar cabezas' },
+  { key: 'cuts_collection',label: 'Separación cortes',    icon: Beaker,         color: 'text-violet-400', bgColor: 'bg-violet-400/10', defaultMinutes: 30 },
+  { key: 'aging',          label: 'Crianza',              icon: Droplets,       color: 'text-yellow-600', bgColor: 'bg-yellow-600/10', defaultMinutes: 0 },
+  { key: 'bottling',       label: 'Embotellado',          icon: Package,        color: 'text-blue-400',   bgColor: 'bg-blue-400/10',   defaultMinutes: 60 },
 ]
 
 const PHASE_KEYS = BREW_PHASES.map(p => p.key)
@@ -215,7 +220,7 @@ export function KanbanTimeline({ currentPhase, elapsed, onAdvance, hopSchedule }
               elapsed={status === 'active' ? elapsed : 0}
               onAdvance={nextPhase ? () => onAdvance(nextPhase) : undefined}
             >
-              {phase.key === 'boiling' && status === 'active' ? hopSchedule : undefined}
+              {phase.key === 'stripping_run' && status === 'active' ? hopSchedule : undefined}
             </PhaseCard>
           )
         })}

@@ -1,24 +1,47 @@
 {
-  "title": "Brewing",
+  "title": "Distillation",
   "phases": {
-    "idle": "Idle", "mashing": "Mashing", "lautering": "Lautering",
-    "boiling": "Boiling", "chilling": "Chilling", "pitching": "Pitching",
-    "fermenting": "Fermenting", "conditioning": "Conditioning",
-    "packaging": "Packaging", "completed": "Completed"
+    "planned": "Planned",
+    "mashing": "Wash Preparation",
+    "fermenting": "Wash Fermentation",
+    "stripping_run": "Stripping Run",
+    "spirit_run": "Spirit Run",
+    "cuts_collection": "Cuts Collection",
+    "aging": "Aging / Maturation",
+    "bottling": "Bottling",
+    "completed": "Completed",
+    "aborted": "Aborted"
+  },
+  "cuts": {
+    "heads": "Heads",
+    "hearts": "Hearts",
+    "tails": "Tails",
+    "heads_warning": "⚠️ Heads contain methanol — always discard them",
+    "hearts_note": "Hearts are the quality spirit",
+    "tails_note": "Tails can be redistilled"
   },
   "timer": {
     "step": "Step", "total": "Total", "start": "Start",
     "pause": "Pause", "resume": "Resume", "next_step": "Next step", "complete_step": "Complete step"
   },
   "session": {
-    "start_brew": "Start brewing", "end_brew": "End session",
-    "no_active": "No active brew session", "select_recipe": "Select a recipe to begin",
-    "actual_og": "Actual OG", "actual_fg": "Actual FG",
-    "actual_volume": "Actual volume (L)", "efficiency": "Efficiency"
+    "start_run": "Start distillation run",
+    "end_run": "End run",
+    "no_active": "No active distillation run",
+    "select_recipe": "Select a recipe to begin",
+    "wash_volume": "Wash volume (L)",
+    "wash_abv": "Wash ABV (%)",
+    "target_abv": "Target ABV (%)",
+    "spirit_yield": "Spirit yield (L)",
+    "actual_og": "Actual wash OG",
+    "actual_fg": "Actual wash FG"
   },
   "messages": {
-    "started": "Brew started", "phase_changed": "Phase: {{phase}}",
-    "step_completed": "Step completed!", "brew_completed": "Brew completed! 🍺",
-    "tts_step": "Step {{number}}: {{name}}"
+    "started": "Distillation run started",
+    "phase_changed": "Phase: {{phase}}",
+    "step_completed": "Step completed!",
+    "run_completed": "Run completed! Record your cut volumes.",
+    "tts_step": "Step {{number}}: {{name}}",
+    "safety_reminder": "Ensure adequate ventilation during distillation"
   }
 }

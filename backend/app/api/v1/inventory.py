@@ -7,11 +7,11 @@ from pydantic import BaseModel
 from sqlalchemy import func, select, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_active_user, get_current_brewery
+from app.api.deps import get_current_active_user, get_current_distillery
 from app.core.database import get_db
 from app.models.ingredient import Ingredient, IngredientCategory
 from app.models.user import User
-from app.models.brewery import Brewery
+from app.models.brewery import Distillery
 from app.schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOut, StockAdjust
 
 T = TypeVar("T")
@@ -37,7 +37,7 @@ async def list_ingredients(
     page_size: int = Query(50, ge=1, le=200),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     filters = [Ingredient.distillery_id == distillery.id]
 
@@ -85,7 +85,7 @@ async def create_ingredient(
     data: IngredientCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     ingredient = Ingredient(
         brewery_id=distillery.id,
@@ -102,7 +102,7 @@ async def get_expiring_ingredients(
     days: int = Query(60, ge=1, le=365),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     """Return ingredients expiring within `days` days."""
     cutoff = date.today() + timedelta(days=days)
@@ -120,7 +120,7 @@ async def get_expiring_ingredients(
 async def get_low_stock_ingredients(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     """Return ingredients at or below min_stock threshold."""
     result = await db.execute(
@@ -138,7 +138,7 @@ async def get_ingredient(
     ingredient_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Ingredient).where(
@@ -158,7 +158,7 @@ async def update_ingredient(
     data: IngredientUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Ingredient).where(
@@ -184,7 +184,7 @@ async def adjust_stock(
     data: StockAdjust,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Ingredient).where(
@@ -211,7 +211,7 @@ async def delete_ingredient(
     ingredient_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
-    brewery: Brewery = Depends(get_current_brewery),
+    distillery: Distillery = Depends(get_current_distillery),
 ):
     result = await db.execute(
         select(Ingredient).where(

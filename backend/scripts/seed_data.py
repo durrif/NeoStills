@@ -17,7 +17,7 @@ from sqlalchemy import select
 from app.core.config import settings
 from app.core.security import hash_password
 from app.models.user import User, RoleEnum
-from app.models.brewery import Brewery
+from app.models.brewery import Distillery
 from app.models.base import Base
 
 
@@ -51,15 +51,15 @@ async def seed() -> None:
             session.add(admin)
             await session.flush()
 
-            brewery = Brewery(
-                name="destilería Admin",
-                description="destilería del administrador del sistema",
+            distillery = Distillery(
+                name="NeoStills",
+                description="Destilería principal",
                 owner_id=admin.id,
             )
-            session.add(brewery)
+            session.add(distillery)
             await session.commit()
             print(f"✅ Admin created: {ADMIN_EMAIL} / {ADMIN_PASSWORD}")
-            print(f"✅ Brewery created: destilería Admin")
+            print(f"✅ Distillery created: NeoStills")
             print("⚠️  Change the admin password immediately after first login!")
 
     await engine.dispose()

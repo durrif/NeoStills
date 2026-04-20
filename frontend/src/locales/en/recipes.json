@@ -1,25 +1,57 @@
 {
-  "title": "Recipes",
+  "title": "Distillation Recipes",
   "fields": {
-    "name": "Name", "style": "Style", "batch_size": "Batch size",
-    "boil_time": "Boil time", "og": "Est. OG", "fg": "Est. FG",
-    "abv": "ABV", "ibu": "IBU", "srm": "SRM (color)", "notes": "Notes", "source": "Source"
+    "name": "Name",
+    "spirit_type": "Spirit type",
+    "distillation_method": "Distillation method",
+    "batch_size": "Target spirit volume (L)",
+    "wash_volume": "Wash volume (L)",
+    "og": "Wash OG",
+    "fg": "Wash FG",
+    "wash_abv": "Wash ABV (%)",
+    "target_abv": "Target ABV (%)",
+    "spirit_yield": "Estimated yield (L)",
+    "fruit_brix": "Fruit Brix",
+    "notes": "Notes"
+  },
+  "spirit_types": {
+    "whisky": "Whisky",
+    "gin": "Gin",
+    "brandy": "Brandy / Cognac",
+    "ron": "Rum",
+    "vodka": "Vodka",
+    "aguardiente": "Aguardiente",
+    "grappa": "Grappa / Marc",
+    "mezcal": "Mezcal / Tequila",
+    "other": "Other"
+  },
+  "distillation_methods": {
+    "pot_still": "Pot Still",
+    "column_still": "Column Still",
+    "reflux_still": "Reflux Still",
+    "alembic": "Traditional Alembic"
   },
   "sections": {
-    "malts": "Malts", "hops": "Hops", "yeast": "Yeast",
-    "other": "Other ingredients", "mash": "Mash profile", "water": "Water adjustment"
+    "cereals": "Grains & raw materials",
+    "botanicals": "Botanicals",
+    "yeast": "Yeast",
+    "mash": "Mash profile",
+    "cut_points": "Cut points"
   },
-  "can_brew": {
-    "yes": "Ready to brew", "partial": "Missing some ingredients", "no": "Missing key ingredients"
+  "can_distill": {
+    "yes": "Ready to distill",
+    "partial": "Missing some ingredients",
+    "no": "Missing key ingredients"
   },
-  "sources": { "manual": "Manual", "brewers_friend": "Distiller's Friend", "spiritxml": "spiritXML" },
   "actions": {
-    "brew_now": "Brew now", "sync_bf": "Sync Distiller's Friend",
-    "import_xml": "Import spiritXML", "create_recipe": "Create recipe"
+    "distill_now": "Start distillation",
+    "create_recipe": "Create recipe",
+    "duplicate": "Duplicate recipe"
   },
   "messages": {
-    "synced": "Recipes synced", "imported": "Recipe imported", "created": "Recipe created",
-    "updated": "Recipe updated", "deleted": "Recipe deleted",
-    "empty": "No recipes. Create your first recipe or import from Distiller's Friend."
+    "created": "Recipe created",
+    "updated": "Recipe updated",
+    "deleted": "Recipe deleted",
+    "empty": "No recipes. Create your first distillation recipe."
   }
 }

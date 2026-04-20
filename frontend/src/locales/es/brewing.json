@@ -1,16 +1,24 @@
 {
-  "title": "Elaboración",
+  "title": "Destilación",
   "phases": {
-    "idle": "En reposo",
-    "mashing": "Macerado",
-    "lautering": "Filtrado",
-    "boiling": "Hervor",
-    "chilling": "Enfriado",
-    "pitching": "Pitchado",
-    "fermenting": "Fermentación",
-    "conditioning": "Acondicionado",
-    "packaging": "Envasado",
-    "completed": "Completada"
+    "planned": "Planificado",
+    "mashing": "Preparación del wash",
+    "fermenting": "Fermentación del wash",
+    "stripping_run": "Primera destilación (stripping)",
+    "spirit_run": "Segunda destilación (spirit run)",
+    "cuts_collection": "Separación de cortes",
+    "aging": "Envejecimiento / crianza",
+    "bottling": "Embotellado",
+    "completed": "Completado",
+    "aborted": "Abortado"
+  },
+  "cuts": {
+    "heads": "Cabezas",
+    "hearts": "Corazones",
+    "tails": "Colas",
+    "heads_warning": "⚠️ Las cabezas contienen metanol — siempre descártelas",
+    "hearts_note": "El corazón es el destilado de calidad",
+    "tails_note": "Las colas pueden redistilarse"
   },
   "timer": {
     "step": "Paso",
@@ -22,20 +30,23 @@
     "complete_step": "Completar paso"
   },
   "session": {
-    "start_brew": "Iniciar elaboración",
-    "end_brew": "Finalizar elaboración",
-    "no_active": "No hay elaboración activa",
+    "start_run": "Iniciar lote de destilación",
+    "end_run": "Finalizar lote",
+    "no_active": "No hay lote activo",
     "select_recipe": "Selecciona una receta para comenzar",
-    "actual_og": "DI real",
-    "actual_fg": "DF real",
-    "actual_volume": "Volumen real (L)",
-    "efficiency": "Eficiencia"
+    "wash_volume": "Volumen del wash (L)",
+    "wash_abv": "ABV del wash (%)",
+    "target_abv": "ABV objetivo (%)",
+    "spirit_yield": "Rendimiento en destilado (L)",
+    "actual_og": "OG real del wash",
+    "actual_fg": "FG real del wash"
   },
   "messages": {
-    "started": "Elaboración iniciada",
+    "started": "Lote de destilación iniciado",
     "phase_changed": "Fase: {{phase}}",
     "step_completed": "¡Paso completado!",
-    "brew_completed": "¡Elaboración completada! 🍺",
-    "tts_step": "Paso {{number}}: {{name}}"
+    "run_completed": "¡Lote completado! Registra los volúmenes de corte.",
+    "tts_step": "Paso {{number}}: {{name}}",
+    "safety_reminder": "Mantén ventilación adecuada durante la destilación"
   }
 }

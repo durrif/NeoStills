@@ -40,7 +40,7 @@ function inferStatus(session: BrewSession, reading?: ISpindelReading | null): Fe
     if (reading.temperature && (reading.temperature < 14 || reading.temperature > 28)) return 'attention'
     return 'active'
   }
-  if (session.phase === 'conditioning') return 'healthy'
+  if (session.phase === 'aging') return 'healthy'
   return 'idle'
 }
 
@@ -90,7 +90,7 @@ function DetailPanel({ session, fermenter }: { session: BrewSession; fermenter: 
   // Prefer live reading over last recorded point
   const currentGravity = liveReading?.gravity ?? lastPoint?.gravity
   const currentTemp = liveReading?.temperature ?? lastPoint?.temperature
-  const days = session.fermentation_start ? daysBetween(session.fermentation_start) : session.brew_date ? daysBetween(session.brew_date) : 0
+  const days = session.fermentation_start ? daysBetween(session.fermentation_start) : session.wash_date ? daysBetween(session.wash_date) : 0
 
   const predictedFG = session.planned_fg ?? (session.planned_og ? session.planned_og * 0.75 : null)
   const estDaysLeft = predictedFG && currentGravity
@@ -228,7 +228,7 @@ export default function FermentationPage() {
   // Build digital twin data for each fermenting session
   const twinsData: FermenterTwinData[] = sessions.map((s: BrewSession, i: number) => {
     const fermenter = FERMENTER_CATALOG[i % FERMENTER_CATALOG.length]!
-    const days = s.fermentation_start ? daysBetween(s.fermentation_start) : s.brew_date ? daysBetween(s.brew_date) : 0
+    const days = s.fermentation_start ? daysBetween(s.fermentation_start) : s.wash_date ? daysBetween(s.wash_date) : 0
     return {
       fermenter,
       beerName: s.name,

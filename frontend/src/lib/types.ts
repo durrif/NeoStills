@@ -131,16 +131,16 @@ export interface Recipe {
   brewers_friend_id?: string
 }
 
-// Brew Sessions
+// Distillation Runs
 export type BrewPhase =
   | 'planned'
   | 'mashing'
-  | 'lautering'
-  | 'boiling'
-  | 'cooling'
   | 'fermenting'
-  | 'conditioning'
-  | 'packaging'
+  | 'stripping_run'
+  | 'spirit_run'
+  | 'cuts_collection'
+  | 'aging'
+  | 'bottling'
   | 'completed'
   | 'aborted'
 
@@ -157,22 +157,32 @@ export interface BrewStep {
 
 export interface BrewSession {
   id: string
-  brewery_id: string
+  distillery_id: string
   recipe_id?: string
   name: string
   batch_number?: number
   phase: BrewPhase
-  planned_batch_liters?: number
-  actual_batch_liters?: number
+  still_type?: string
+  wash_volume_liters?: number
+  target_abv?: number
+  wash_abv?: number
+  actual_abv?: number
+  wash_yield_pct?: number
+  spirit_volume_liters?: number
+  stripping_run_enabled?: boolean
+  heads_liters?: number
+  hearts_liters?: number
+  tails_liters?: number
+  cut_temperature_heads?: number
+  cut_temperature_tails?: number
   planned_og?: number
   actual_og?: number
   planned_fg?: number
   actual_fg?: number
-  actual_abv?: number
-  efficiency_pct?: number
-  brew_date?: string
+  wash_date?: string
   fermentation_start?: string
-  packaging_date?: string
+  distillation_date?: string
+  bottling_date?: string
   step_log?: Record<string, unknown>[]
   notes?: string
   created_at: string

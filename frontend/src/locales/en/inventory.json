@@ -1,9 +1,15 @@
 {
   "title": "Inventory",
   "categories": {
-    "malta_base": "Base Malt", "malta_especial": "Specialty Malt",
-    "malta_otra": "Other Malts", "lupulo": "Hops",
-    "levadura": "Yeast", "adjunto": "Adjuncts", "otro": "Other"
+    "cereal_base": "Base Grain",
+    "cereal_especial": "Specialty Grain",
+    "fruta": "Fruit",
+    "botanico": "Botanical",
+    "levadura": "Yeast",
+    "azucar": "Sugar / Molasses",
+    "agua_quimica": "Water Chemical",
+    "adjunto": "Adjuncts",
+    "otro": "Other"
   },
   "fields": {
     "name": "Name", "category": "Category", "quantity": "Quantity", "unit": "Unit",

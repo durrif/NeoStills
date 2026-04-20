@@ -20,7 +20,7 @@ services:
     container_name: neostills-backend
     restart: always
     expose:
-      - "8001:8000"
+      - "8000"
     environment:
       - DATABASE_URL=postgresql+asyncpg://neostills:${POSTGRES_PASSWORD}@postgres:5432/neostills
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
@@ -36,7 +36,7 @@ services:
       - REPLICATE_API_TOKEN=${REPLICATE_API_TOKEN}
       - BREWERS_FRIEND_API_KEY=${BREWERS_FRIEND_API_KEY}
       - ISPINDEL_WEBHOOK_SECRET=${ISPINDEL_WEBHOOK_SECRET}
-      - CORS_ORIGINS=https://neostills.es,https://www.neostills.es
+      - CORS_ORIGINS=https://neostills.com,https://www.neostills.com
       - ENVIRONMENT=production
       - LOG_FORMAT=json
     depends_on:
@@ -126,7 +126,7 @@ services:
     container_name: neostills
     restart: always
     ports:
-      - "8000:80"   # External nginx proxies neostills.es → 8080
+      - "8006:80"   # Cloudflare tunnel via proxy network; host port for direct debug access
     depends_on:
       - backend
     networks:

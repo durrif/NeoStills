@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
   /* ── Synthetic "ready to serve" count ──────────────────────── */
   const readyToServe = useMemo(() => {
-    return allSessions.filter(s => s.phase === 'conditioning' || s.phase === 'packaging' || s.phase === 'completed').length
+    return allSessions.filter(s => s.phase === 'aging' || s.phase === 'bottling' || s.phase === 'completed').length
   }, [allSessions])
 
   /* ── AI Recommendation (rule-based, in future: AI endpoint) ── */
@@ -145,8 +145,8 @@ export default function DashboardPage() {
     },
     {
       icon: Beaker, label: t('dashboard.active_brews', 'Lotes activos'), value: brewCount,
-      sub: allSessions.find(s => s.phase === 'boiling' || s.phase === 'mashing')
-        ? allSessions.find(s => s.phase === 'boiling' || s.phase === 'mashing')!.name
+      sub: allSessions.find(s => s.phase === 'stripping_run' || s.phase === 'mashing')
+        ? allSessions.find(s => s.phase === 'stripping_run' || s.phase === 'mashing')!.name
         : undefined,
       subColor: 'text-accent-copper',
       color: 'text-accent-copper', bg: 'bg-accent-copper/10', to: '/brewing' as const,
@@ -425,7 +425,7 @@ export default function DashboardPage() {
                       'w-2.5 h-2.5 rounded-full',
                       session.phase === 'fermenting' ? 'bg-accent-info' :
                       session.phase === 'completed' ? 'bg-accent-hop' :
-                      session.phase === 'boiling' || session.phase === 'mashing' ? 'bg-accent-amber' :
+                      session.phase === 'stripping_run' || session.phase === 'mashing' ? 'bg-accent-amber' :
                       session.phase === 'aborted' ? 'bg-accent-danger' :
                       'bg-text-tertiary'
                     )} />
@@ -476,7 +476,7 @@ export default function DashboardPage() {
           {readyToServe > 0 ? (
             <div className="space-y-3">
               {allSessions
-                .filter(s => s.phase === 'conditioning' || s.phase === 'packaging' || s.phase === 'completed')
+                .filter(s => s.phase === 'aging' || s.phase === 'bottling' || s.phase === 'completed')
                 .slice(0, 4)
                 .map((session, idx) => (
                   <div key={session.id} className="flex items-center gap-3">

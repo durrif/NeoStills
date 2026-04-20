@@ -1,48 +1,57 @@
 {
-  "title": "Recetas",
+  "title": "Recetas de Destilación",
   "fields": {
     "name": "Nombre",
-    "style": "Estilo",
-    "batch_size": "Volumen de lote",
-    "boil_time": "Tiempo de hervor",
-    "og": "DI estimada",
-    "fg": "DF estimada",
-    "abv": "ABV",
-    "ibu": "IBU",
-    "srm": "SRM (color)",
-    "notes": "Notas",
-    "source": "Origen"
+    "spirit_type": "Tipo de destilado",
+    "distillation_method": "Método de destilación",
+    "batch_size": "Volumen objetivo de destilado (L)",
+    "wash_volume": "Volumen del wash (L)",
+    "og": "OG del wash",
+    "fg": "FG del wash",
+    "wash_abv": "ABV del wash (%)",
+    "target_abv": "ABV objetivo del destilado (%)",
+    "spirit_yield": "Rendimiento estimado (L)",
+    "fruit_brix": "Brix de la fruta",
+    "notes": "Notas"
+  },
+  "spirit_types": {
+    "whisky": "Whisky",
+    "gin": "Gin",
+    "brandy": "Brandy / Cognac",
+    "ron": "Ron",
+    "vodka": "Vodka",
+    "aguardiente": "Aguardiente",
+    "grappa": "Grappa / Marc",
+    "mezcal": "Mezcal / Tequila",
+    "other": "Otro"
+  },
+  "distillation_methods": {
+    "pot_still": "Alambique de pot",
+    "column_still": "Columna de destilación",
+    "reflux_still": "Reflux still",
+    "alembic": "Alambique tradicional"
   },
   "sections": {
-    "malts": "Maltas",
-    "hops": "Lúpulos",
+    "cereals": "Cereales y materias primas",
+    "botanicals": "Botánicos",
     "yeast": "Levadura",
-    "other": "Otros ingredientes",
     "mash": "Perfil de macerado",
-    "water": "Ajuste de agua"
+    "cut_points": "Puntos de corte"
   },
-  "can_brew": {
-    "yes": "Puedes elaborarla",
+  "can_distill": {
+    "yes": "Puedes destilar esta receta",
     "partial": "Te faltan algunos ingredientes",
     "no": "Faltan ingredientes clave"
   },
-  "sources": {
-    "manual": "Manual",
-    "brewers_friend": "Distiller's Friend",
-    "beerxml": "BeerXML"
-  },
   "actions": {
-    "brew_now": "Elaborar ahora",
-    "sync_bf": "Sincronizar Distiller's Friend",
-    "import_xml": "Importar BeerXML",
-    "create_recipe": "Crear receta"
+    "distill_now": "Iniciar destilación",
+    "create_recipe": "Crear receta",
+    "duplicate": "Duplicar receta"
   },
   "messages": {
-    "synced": "Recetas sincronizadas",
-    "imported": "Receta importada",
     "created": "Receta creada",
     "updated": "Receta actualizada",
     "deleted": "Receta eliminada",
-    "empty": "Sin recetas. Crea tu primera receta o importa desde Distiller's Friend."
+    "empty": "Sin recetas. Crea tu primera receta de destilación."
   }
 }

@@ -1,11 +1,13 @@
 {
   "title": "Inventario",
   "categories": {
-    "malta_base": "Malta Base",
-    "malta_especial": "Malta Especial",
-    "malta_otra": "Otras Maltas",
-    "lupulo": "Lúpulo",
+    "cereal_base": "Cereal Base",
+    "cereal_especial": "Cereal Especial",
+    "fruta": "Fruta",
+    "botanico": "Botánico",
     "levadura": "Levadura",
+    "azucar": "Azúcar / Melaza",
+    "agua_quimica": "Química de agua",
     "adjunto": "Adjuntos",
     "otro": "Otros"
   },

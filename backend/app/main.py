@@ -28,6 +28,8 @@ from app.api.v1 import brewing as brewing_router
 from app.api.v1 import fermentation as fermentation_router
 from app.api.v1 import prices as prices_router
 from app.api.v1 import water as water_router
+from app.api.v1 import calculators as calculators_router
+from app.api.v1 import onboarding as onboarding_router
 
 # ─── Correlation ID context ───────────────────────────────────────────────────
 request_id_var: ContextVar[str] = ContextVar("request_id", default="-")
@@ -164,6 +166,8 @@ app.include_router(brewing_router.router, prefix="/api/v1")
 app.include_router(fermentation_router.router, prefix="/api/v1")
 app.include_router(prices_router.router, prefix="/api/v1")
 app.include_router(water_router.router, prefix="/api/v1")
+app.include_router(calculators_router.router, prefix="/api/v1")
+app.include_router(onboarding_router.router, prefix="/api/v1")
 
 
 # ─── Health & Version endpoints ───────────────────────────────────────────────
