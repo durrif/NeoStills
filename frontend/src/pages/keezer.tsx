@@ -8,9 +8,9 @@ import {
   X, Check, Pencil, Trash2,
   BarChart3, AlertCircle, RefreshCw,
 } from 'lucide-react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Html, RoundedBox } from '@react-three/drei'
-import type { Mesh } from 'three'
+import * as THREE from 'three'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Html } from '@react-three/drei'
 import { useUIStore } from '@/stores/ui-store'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -791,125 +791,311 @@ function EmptyState({ onAdd, hasFilter }: { onAdd: () => void; hasFilter: boolea
 
 // ─── Página principal ─────────────────────────────────────────────────────────
 
+// ─── 3D: Geometry helper — LatheGeometry con barriga realista ─────────────────
+function createBarrelGeo() {
+  const pts: THREE.Vector2[] = []
+  for (let i = 0; i <= 20; i++) {
+    const t = i / 20
+    const y = -0.45 + t * 0.9
+    // bulge parabólico: máximo en el centro, mínimo en los extremos
+    const bulge = 1 - Math.pow(2 * t - 1, 2)
+    const r = 0.32 + (0.40 - 0.32) * bulge
+    pts.push(new THREE.Vector2(r, y))
+  }
+  return new THREE.LatheGeometry(pts, 24)
+}
+
+const STATUS_3D: Record<VesselStatus, string> = {
+  empty:              '#3A2A18',
+  aging:              '#8B6914',
+  ready_for_sampling: '#C7A951',
+  ready_to_bottle:    '#5B8040',
+  bottled:            '#4A6A5A',
+  maintenance:        '#8B3030',
+}
+
 // ─── 3D: Barrel individual ────────────────────────────────────────────────────
 function Barrel3D({
-  vessel,
-  position,
-  onClick,
-  isSelected,
+  vessel, position, isSelected, onClick,
 }: {
   vessel: AgingVessel
   position: [number, number, number]
-  onClick: () => void
   isSelected: boolean
+  onClick: () => void
 }) {
-  const meshRef = useRef<Mesh>(null)
-
-  // Colores por estado
-  const COLOR_BY_STATUS: Record<VesselStatus, string> = {
-    empty:               '#3A3A4A',
-    aging:               '#8B4513',
-    ready_for_sampling:  '#C7A951',
-    ready_to_bottle:     '#6B8E4E',
-    bottled:             '#2A4A2A',
-    maintenance:         '#C75050',
-  }
-  const barrelColor = COLOR_BY_STATUS[vessel.status] ?? '#8B4513'
-  const isTank = !['barrel_new','barrel_refill','quarter_cask','octave','hogshead','butt',
-    'port_pipe','cask_ex_bourbon','cask_ex_sherry','cask_ex_port','cask_ex_wine','cask_ex_rum'].includes(vessel.vessel_type)
-
-  // Altura proporcional al volumen relativo (entre 0.8 y 2.2)
-  const fillRatio = Math.min(vessel.fill_pct / 100, 1)
-  const barrelH = 0.8 + fillRatio * 1.4
-
-  // Pequeña oscilación en selected
-  useFrame(({ clock }) => {
-    if (meshRef.current && isSelected) {
-      meshRef.current.position.y = position[1] + Math.sin(clock.elapsedTime * 3) * 0.04
-    } else if (meshRef.current) {
-      meshRef.current.position.y = position[1]
-    }
-  })
+  const [hovered, setHovered] = useState(false)
+  const barrelGeo = useMemo(() => createBarrelGeo(), [])
+  const isTank = !BARREL_TYPES.has(vessel.vessel_type)
+  const stColor = STATUS_3D[vessel.status]
+  // Barricas más viejas = madera más oscura
+  const ageFactor = vessel.age_months ? Math.max(0.38, 1 - vessel.age_months * 0.008) : 1
+  const baseColor = useMemo(
+    () => new THREE.Color(stColor).multiplyScalar(vessel.status === 'empty' ? 0.55 : ageFactor),
+    [stColor, ageFactor, vessel.status]
+  )
+  // Color del LED de alerta
+  const alertColor =
+    vessel.status === 'ready_to_bottle'    ? '#4ADE80' :
+    vessel.status === 'ready_for_sampling' ? '#F59E0B' :
+    vessel.status === 'maintenance'        ? '#EF4444' : null
 
   return (
     <group position={position} onClick={(e) => { e.stopPropagation(); onClick() }}>
-      {/* Cuerpo de la barrica / depósito */}
       {isTank ? (
-        <RoundedBox ref={meshRef as any} args={[0.7, barrelH, 0.7]} radius={0.08} smoothness={4}
-          position={[0, barrelH / 2, 0]}
-          castShadow>
-          <meshStandardMaterial
-            color={barrelColor}
-            metalness={isTank ? 0.7 : 0.1}
-            roughness={isTank ? 0.2 : 0.8}
-            emissive={isSelected ? barrelColor : '#000'}
-            emissiveIntensity={isSelected ? 0.3 : 0}
-          />
-        </RoundedBox>
-      ) : (
-        /* Barrica: cilindro con curva (dos conos + cilindro central) */
-        <group ref={meshRef} position={[0, barrelH / 2, 0]}>
-          <mesh castShadow>
-            <cylinderGeometry args={[0.32, 0.32, barrelH * 0.5, 16]} />
+        /* ── Depósito inox: cilindro vertical ── */
+        <>
+          <mesh castShadow
+            onPointerEnter={() => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}>
+            <cylinderGeometry args={[0.32, 0.35, 0.9, 18]} />
             <meshStandardMaterial
-              color={barrelColor}
-              roughness={0.75}
-              metalness={0.05}
-              emissive={isSelected ? barrelColor : '#000'}
-              emissiveIntensity={isSelected ? 0.3 : 0}
+              color={baseColor} metalness={0.75} roughness={0.28}
+              emissive={hovered || isSelected ? stColor : '#000'}
+              emissiveIntensity={hovered ? 0.4 : isSelected ? 0.25 : 0}
             />
           </mesh>
-          {/* Aros de metal */}
-          {[-barrelH * 0.18, 0, barrelH * 0.18].map((y, i) => (
-            <mesh key={i} position={[0, y, 0]} castShadow>
-              <torusGeometry args={[0.34, 0.018, 8, 24]} />
-              <meshStandardMaterial color="#555" metalness={0.9} roughness={0.2} />
+          {/* Cúpula superior */}
+          <mesh position={[0, 0.5, 0]} castShadow>
+            <sphereGeometry args={[0.32, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <meshStandardMaterial color={baseColor} metalness={0.75} roughness={0.28} />
+          </mesh>
+          {/* Aro de unión */}
+          <mesh position={[0, 0, 0]}>
+            <torusGeometry args={[0.35, 0.012, 6, 24]} />
+            <meshStandardMaterial color="#888" metalness={0.9} roughness={0.2} />
+          </mesh>
+        </>
+      ) : (
+        /* ── Barrica: LatheGeometry tumbada en el rack ── */
+        <>
+          <mesh
+            geometry={barrelGeo}
+            rotation={[0, 0, Math.PI / 2]}
+            castShadow
+            onPointerEnter={() => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}
+          >
+            <meshStandardMaterial
+              color={baseColor} roughness={0.82} metalness={0.04}
+              emissive={hovered || isSelected ? stColor : '#000'}
+              emissiveIntensity={hovered ? 0.4 : isSelected ? 0.25 : 0}
+            />
+          </mesh>
+          {/* Tapas planas (cabezas) */}
+          {([-0.46, 0.46] as number[]).map((offset, i) => (
+            <mesh key={i} position={[offset, 0, 0]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <circleGeometry args={[0.32, 24]} />
+              <meshStandardMaterial
+                color={baseColor.clone().multiplyScalar(0.82)}
+                roughness={0.88} metalness={0.03} side={THREE.DoubleSide}
+              />
             </mesh>
           ))}
-        </group>
+          {/* 6 aros de metal en posiciones realistas */}
+          {([-0.40, -0.28, -0.12, 0.12, 0.28, 0.40] as number[]).map((pos, i) => {
+            const t = (pos + 0.45) / 0.9
+            const bulge = 1 - Math.pow(2 * t - 1, 2)
+            const r = 0.32 + (0.40 - 0.32) * bulge
+            return (
+              <mesh key={i} position={[pos, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+                <torusGeometry args={[r + 0.005, 0.008, 6, 24]} />
+                <meshStandardMaterial color="#4A4A4A" metalness={0.92} roughness={0.25} />
+              </mesh>
+            )
+          })}
+          {/* Boquete (bung) + tapón */}
+          <group position={[0, 0.40, 0]}>
+            <mesh>
+              <cylinderGeometry args={[0.04, 0.04, 0.04, 12]} />
+              <meshStandardMaterial color="#3A3A3A" metalness={0.85} roughness={0.2} />
+            </mesh>
+            <mesh position={[0, 0.03, 0]}>
+              <cylinderGeometry args={[0.03, 0.035, 0.03, 8]} />
+              <meshStandardMaterial color="#997744" roughness={0.95} />
+            </mesh>
+          </group>
+        </>
       )}
 
-      {/* Suelo base */}
-      <mesh position={[0, 0.02, 0]} receiveShadow>
-        <cylinderGeometry args={[0.38, 0.38, 0.04, 16]} />
-        <meshStandardMaterial color="#222" roughness={0.9} />
-      </mesh>
+      {/* LED de alerta (ready/maintenance) */}
+      {alertColor && (
+        <mesh position={[0, isTank ? 0.7 : 0.58, 0]}>
+          <sphereGeometry args={[0.055, 8, 8]} />
+          <meshStandardMaterial
+            color={alertColor} emissive={alertColor}
+            emissiveIntensity={1.6} toneMapped={false}
+          />
+        </mesh>
+      )}
 
-      {/* Etiqueta flotante HTML (sin carga de fuente) */}
-      <Html
-        position={[0, barrelH + 0.55, 0]}
-        center
-        distanceFactor={6}
-        zIndexRange={[10, 0]}
-      >
+      {/* Etiqueta permanente debajo */}
+      <Html position={[0, isTank ? -0.58 : -0.65, 0]} center distanceFactor={6} occlude={false}>
         <div style={{
-          pointerEvents: 'none',
-          textAlign: 'center',
-          userSelect: 'none',
-          lineHeight: 1.2,
+          background: 'rgba(15,12,8,0.88)',
+          border: '1px solid rgba(74,53,32,0.75)',
+          borderRadius: '4px', padding: '2px 7px',
+          fontSize: '9px', whiteSpace: 'nowrap',
+          pointerEvents: 'none', userSelect: 'none',
+          fontFamily: 'monospace', color: '#D4A843',
         }}>
-          <div style={{
-            fontFamily: 'monospace',
-            fontSize: '11px',
-            fontWeight: 700,
-            color: isSelected ? '#F0EBE1' : '#C7A951',
-            whiteSpace: 'nowrap',
-            textShadow: '0 1px 4px rgba(0,0,0,0.9)',
-          }}>
-            {vessel.code}
-          </div>
-          {vessel.current_abv != null && (
-            <div style={{
-              fontFamily: 'monospace',
-              fontSize: '9px',
-              color: isSelected ? '#C7A951' : '#8B9BB4',
-              textShadow: '0 1px 4px rgba(0,0,0,0.9)',
-            }}>
-              {vessel.current_abv.toFixed(1)}%
-            </div>
+          {vessel.code}
+          {vessel.age_months != null && (
+            <><span style={{ color: '#444', margin: '0 3px' }}>·</span>
+            <span style={{ color: '#C8BFB0' }}>{vessel.age_months}m</span></>
           )}
         </div>
       </Html>
+
+      {/* HUD de hover */}
+      {hovered && (
+        <Html position={[0, isTank ? 1.3 : 1.15, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{
+            background: 'rgba(18,15,10,0.96)',
+            border: `1px solid ${stColor}`,
+            borderRadius: '8px', padding: '10px 14px',
+            fontSize: '11px', whiteSpace: 'nowrap',
+            backdropFilter: 'blur(8px)', minWidth: '178px',
+            pointerEvents: 'none',
+          }}>
+            <p style={{ color: '#D4A843', fontWeight: 700, fontSize: '13px', marginBottom: '6px' }}>
+              {vessel.code}{vessel.name ? ` · ${vessel.name}` : ''}
+            </p>
+            <div style={{ color: '#DDD', lineHeight: 1.85, fontSize: '11px' }}>
+              <div>{VESSEL_TYPE_LABELS[vessel.vessel_type]}</div>
+              {vessel.spirit_type && (
+                <div>Spirit: <span style={{ color: '#C7A951' }}>{vessel.spirit_name || vessel.spirit_type}</span></div>
+              )}
+              {vessel.wood_type !== 'none' && <div>Madera: {WOOD_LABELS[vessel.wood_type]}</div>}
+              {vessel.current_abv != null && (
+                <div>ABV: <span style={{ fontFamily: 'monospace' }}>{vessel.current_abv}%</span></div>
+              )}
+              {vessel.age_months != null && (
+                <div>Edad: <span style={{ fontFamily: 'monospace' }}>{vessel.age_months} meses</span></div>
+              )}
+              <div style={{ marginTop: '5px' }}>
+                <span style={{
+                  background: `${stColor}28`, color: stColor,
+                  padding: '1px 7px', borderRadius: '999px',
+                  fontSize: '10px', fontWeight: 600,
+                }}>
+                  {STATUS_CONFIG[vessel.status].label}
+                </span>
+              </div>
+            </div>
+          </div>
+        </Html>
+      )}
+    </group>
+  )
+}
+
+// ─── 3D: Estructura de rack de madera ─────────────────────────────────────────
+function BarrelRack({ count, xPos, zStart }: { count: number; xPos: number; zStart: number }) {
+  const zEnd = zStart + (count - 1) * 1.2
+  const zCenter = (zStart + zEnd) / 2
+  const length = zEnd - zStart + 0.9
+  return (
+    <group position={[xPos, 0, zCenter]}>
+      {/* Raíles inferiores */}
+      {([-0.3, 0.3] as number[]).map((offset, i) => (
+        <mesh key={`rail-${i}`} position={[offset, 0.13, 0]} castShadow>
+          <boxGeometry args={[0.12, 0.12, length]} />
+          <meshStandardMaterial color="#5C4033" roughness={0.92} metalness={0.02} />
+        </mesh>
+      ))}
+      {/* Cunas en V por posición */}
+      {Array.from({ length: count }, (_, i) => {
+        const z = zStart + i * 1.2 - zCenter
+        return (
+          <group key={`cradle-${i}`} position={[0, 0.15, z]}>
+            <mesh position={[-0.25, 0.08, 0]} rotation={[0, 0, 0.5]} castShadow>
+              <boxGeometry args={[0.06, 0.2, 0.15]} />
+              <meshStandardMaterial color="#6B5035" roughness={0.9} />
+            </mesh>
+            <mesh position={[0.25, 0.08, 0]} rotation={[0, 0, -0.5]} castShadow>
+              <boxGeometry args={[0.06, 0.2, 0.15]} />
+              <meshStandardMaterial color="#6B5035" roughness={0.9} />
+            </mesh>
+          </group>
+        )
+      })}
+      {/* Estante intermedio */}
+      {([-0.35, 0.35] as number[]).map((offset, i) => (
+        <mesh key={`shelf-${i}`} position={[offset, 0.95, 0]} castShadow>
+          <boxGeometry args={[0.10, 0.10, length]} />
+          <meshStandardMaterial color="#5C4033" roughness={0.92} metalness={0.02} />
+        </mesh>
+      ))}
+      {/* Postes verticales en extremos */}
+      {[zStart - zCenter - 0.35, zEnd - zCenter + 0.35].map((z, i) => (
+        <group key={`post-${i}`}>
+          {([-0.42, 0.42] as number[]).map((offset, j) => (
+            <mesh key={`vpost-${j}`} position={[offset, 1.1, z]} castShadow>
+              <boxGeometry args={[0.1, 2.2, 0.1]} />
+              <meshStandardMaterial color="#5C4033" roughness={0.92} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+    </group>
+  )
+}
+
+// ─── 3D: Entorno cueva/bodega ─────────────────────────────────────────────────
+function CellarEnv() {
+  return (
+    <group>
+      {/* Suelo de piedra */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[28, 22]} />
+        <meshStandardMaterial color="#3A2F28" roughness={0.95} />
+      </mesh>
+      {/* Pared trasera */}
+      <mesh position={[0, 3.5, -10]} receiveShadow>
+        <boxGeometry args={[28, 7, 0.4]} />
+        <meshStandardMaterial color="#5A4A3A" roughness={0.96} />
+      </mesh>
+      {/* Paredes laterales */}
+      <mesh position={[-13, 3.5, 0]} receiveShadow>
+        <boxGeometry args={[0.4, 7, 22]} />
+        <meshStandardMaterial color="#5A4A3A" roughness={0.96} />
+      </mesh>
+      <mesh position={[13, 3.5, 0]} receiveShadow>
+        <boxGeometry args={[0.4, 7, 22]} />
+        <meshStandardMaterial color="#5A4A3A" roughness={0.96} />
+      </mesh>
+      {/* Techo abovedado */}
+      <mesh position={[0, 5.5, 0]}>
+        <cylinderGeometry args={[13, 13, 22, 40, 1, false, 0, Math.PI]} />
+        <meshStandardMaterial color="#4A3A2A" roughness={1} side={THREE.BackSide} />
+      </mesh>
+      {/* Nervios decorativos */}
+      {([-7, -3, 0, 3, 7] as number[]).map((z, i) => (
+        <mesh key={`rib-${i}`} position={[0, 5.5, z]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[12, 0.16, 6, 40, Math.PI]} />
+          <meshStandardMaterial color="#4F3D2D" roughness={0.95} />
+        </mesh>
+      ))}
+      {/* Canal central del suelo */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 0]}>
+        <planeGeometry args={[0.18, 20]} />
+        <meshStandardMaterial color="#2A2018" roughness={0.98} />
+      </mesh>
+      {/* Antorchas en paredes */}
+      {([
+        [-12.5, 3.2, -6] as [number,number,number],
+        [-12.5, 3.2,  6] as [number,number,number],
+        [ 12.5, 3.2, -6] as [number,number,number],
+        [ 12.5, 3.2,  6] as [number,number,number],
+      ]).map((pos, i) => (
+        <group key={`torch-${i}`} position={pos}>
+          <mesh>
+            <cylinderGeometry args={[0.05, 0.04, 0.3, 6]} />
+            <meshStandardMaterial color="#444" metalness={0.7} roughness={0.3} />
+          </mesh>
+          <pointLight position={[0, 0.4, 0]} intensity={0.55} color="#FF8833" distance={9} decay={2} />
+        </group>
+      ))}
     </group>
   )
 }
@@ -924,60 +1110,106 @@ function BarrelRoom3D({
   selectedId: string | null
   onSelect: (v: AgingVessel) => void
 }) {
-  // Distribuir en filas de hasta 6
-  const COLS = 6
-  const GAP_X = 1.4
-  const GAP_Z = 2.2
+  const barrels = useMemo(() => vessels.filter(v =>  BARREL_TYPES.has(v.vessel_type)), [vessels])
+  const tanks   = useMemo(() => vessels.filter(v => !BARREL_TYPES.has(v.vessel_type)), [vessels])
+
+  // Agrupar barricas por location_row o auto-asignar en filas de 8
+  const barrelRows = useMemo(() => {
+    const ROW_SIZE = 8
+    const byRow: Record<string, AgingVessel[]> = {}
+    barrels.forEach((v, idx) => {
+      const row = v.location_row || String.fromCharCode(65 + Math.floor(idx / ROW_SIZE))
+      if (!byRow[row]) byRow[row] = []
+      byRow[row].push(v)
+    })
+    return Object.entries(byRow)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([label, items]) => ({ label, items }))
+  }, [barrels])
+
+  const ROW_SPACING = 3.6
+  const totalWidth  = Math.max(0, (barrelRows.length - 1) * ROW_SPACING)
+  const Z_START     = -((Math.max(...barrelRows.map(r => r.items.length), 1) - 1) * 1.2) / 2
 
   return (
     <Canvas
       shadows
-      camera={{ position: [0, 5, 12], fov: 55 }}
-      style={{ background: '#0F0E0D', borderRadius: '1rem', width: '100%', height: '100%' }}
+      dpr={[1, 1.5]}
+      camera={{ position: [8, 6, 10], fov: 52 }}
+      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
+      style={{ width: '100%', height: '100%' }}
     >
-      <ambientLight intensity={0.4} />
+      <color attach="background" args={['#0D0B09']} />
+      <fog attach="fog" args={['#0D0B09', 16, 34]} />
+
+      {/* Iluminación tipo cueva */}
+      <ambientLight intensity={0.22} color="#FFAA66" />
       <directionalLight
+        position={[0, 9, 5]} intensity={2.8} color="#FFF8EE"
         castShadow
-        position={[5, 10, 5]}
-        intensity={1.2}
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-far={30}
+        shadow-camera-left={-14} shadow-camera-right={14}
+        shadow-camera-top={14} shadow-camera-bottom={-14}
+        shadow-bias={-0.001}
       />
-      <pointLight position={[-5, 6, -5]} intensity={0.5} color="#B87333" />
+      <hemisphereLight args={['#443322', '#1A1208', 0.9]} />
 
-      {/* Suelo */}
-      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[40, 40]} />
-        <meshStandardMaterial color="#1A1410" roughness={0.95} />
-      </mesh>
+      <CellarEnv />
 
-      {vessels.map((v, i) => {
-          const col = i % COLS
-          const row = Math.floor(i / COLS)
-          const xOffset = ((vessels.length > COLS ? COLS : vessels.length) - 1) * GAP_X / 2
-          const zOffset = (Math.ceil(vessels.length / COLS) - 1) * GAP_Z / 2
-          const pos: [number, number, number] = [
-            col * GAP_X - xOffset,
-            0,
-            row * GAP_Z - zOffset,
-          ]
-          return (
-            <Barrel3D
-              key={v.id}
-              vessel={v}
-              position={pos}
-              isSelected={v.id === selectedId}
-              onClick={() => onSelect(v)}
-            />
-          )
-})}
+      {/* Filas de barricas en racks */}
+      {barrelRows.map(({ label, items }, rowIdx) => {
+        const xPos = rowIdx * ROW_SPACING - totalWidth / 2
+        return (
+          <group key={label}>
+            <BarrelRack count={items.length} xPos={xPos} zStart={Z_START} />
+            {items.map((v, i) => (
+              <Barrel3D
+                key={v.id}
+                vessel={v}
+                position={[xPos, 0.45, Z_START + i * 1.2]}
+                isSelected={v.id === selectedId}
+                onClick={() => onSelect(v)}
+              />
+            ))}
+            {/* Etiqueta de fila */}
+            <Html position={[xPos, 3.0, Z_START - 1.0]} center distanceFactor={10}>
+              <div style={{
+                background: 'rgba(15,12,8,0.8)',
+                border: '1px solid rgba(212,168,67,0.4)',
+                borderRadius: '5px', padding: '3px 10px',
+                fontSize: '11px', fontWeight: 700,
+                color: '#D4A843', letterSpacing: '0.1em',
+                textTransform: 'uppercase', pointerEvents: 'none',
+                whiteSpace: 'nowrap',
+              }}>
+                Fila {label}
+              </div>
+            </Html>
+          </group>
+        )
+      })}
+
+      {/* Depósitos en área separada (derecha del rack) */}
+      {tanks.map((v, i) => (
+        <Barrel3D
+          key={v.id}
+          vessel={v}
+          position={[
+            totalWidth / 2 + 3 + (i % 3) * 1.3,
+            0.5,
+            Z_START + Math.floor(i / 3) * 1.9,
+          ]}
+          isSelected={v.id === selectedId}
+          onClick={() => onSelect(v)}
+        />
+      ))}
 
       <OrbitControls
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        minDistance={3}
-        maxDistance={30}
-        maxPolarAngle={Math.PI / 2.1}
+        target={[0, 1, 0]}
+        enablePan enableZoom enableRotate
+        minDistance={3} maxDistance={24}
+        maxPolarAngle={Math.PI / 2.05}
       />
     </Canvas>
   )
