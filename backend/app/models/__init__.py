@@ -10,6 +10,7 @@ from app.models.recipe import Recipe, RecipeStatus, DistillationMethod
 from app.models.brew_session import DistillationRun, BrewSession, SessionPhase
 from app.models.fermentation import FermentationDataPoint
 from app.models.price import PriceRecord, PriceAlert, AlertType
+from app.models.aging_vessel import AgingVessel, VesselType, WoodType, ToastLevel, VesselStatus
 
 __all__ = [
     "Base", "TimestampMixin",
@@ -22,5 +23,6 @@ __all__ = [
     "DistillationRun", "BrewSession", "SessionPhase",
     "FermentationDataPoint",
     "PriceRecord", "PriceAlert", "AlertType",
+    "AgingVessel", "VesselType", "WoodType", "ToastLevel", "VesselStatus",
 ]
 

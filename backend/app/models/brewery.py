@@ -63,6 +63,7 @@ class Distillery(Base, TimestampMixin):
     conversations = relationship("AIConversation", back_populates="distillery", cascade="all, delete-orphan")
     recipes = relationship("Recipe", back_populates="distillery", cascade="all, delete-orphan")
     distillation_runs = relationship("DistillationRun", back_populates="distillery", cascade="all, delete-orphan")
+    aging_vessels = relationship("AgingVessel", back_populates="distillery", cascade="all, delete-orphan")
 
     __table_args__ = (
         Index("ix_distilleries_owner_id", "owner_id"),
