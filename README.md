@@ -1,24 +1,8 @@
-# BeerGate
+# NeoStills
 
 Sistema de gestión para cervecerías artesanales.
 
 ## Configuración
 
-**Dominio planeado**: `neostills.ovosfera.com`  
-**Puerto**: 8004  
-**Estado**: Pendiente de desarrollo
-
-## Setup
-
-Ver [../capones-backend/TEMPLATE_NEW_APP.md](../capones-backend/TEMPLATE_NEW_APP.md) para instrucciones completas.
-
-## Cloudflare Tunnel
-
-```yaml
-Service: http://neostills:8004
-Domain: neostills.ovosfera.com
-```
-
-## Red Docker
 
 Debe estar en la red `proxy` para conectar con Cloudflare Tunnel.
