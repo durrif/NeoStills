@@ -1,6 +1,6 @@
 // frontend/src/pages/keezer.tsx — NeoStills Barrel Tracker (Aging Room)
 // Inspirado en hub.bodegadata.com/barrels y /cellar — adaptado al dominio de destilación
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, Suspense, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Archive, Plus, Search, Droplets,
@@ -8,6 +8,9 @@ import {
   X, Check, Pencil, Trash2,
   BarChart3, AlertCircle, RefreshCw,
 } from 'lucide-react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls, Text, RoundedBox } from '@react-three/drei'
+import type { Mesh } from 'three'
 import { useUIStore } from '@/stores/ui-store'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -788,6 +791,189 @@ function EmptyState({ onAdd, hasFilter }: { onAdd: () => void; hasFilter: boolea
 
 // ─── Página principal ─────────────────────────────────────────────────────────
 
+// ─── 3D: Barrel individual ────────────────────────────────────────────────────
+function Barrel3D({
+  vessel,
+  position,
+  onClick,
+  isSelected,
+}: {
+  vessel: AgingVessel
+  position: [number, number, number]
+  onClick: () => void
+  isSelected: boolean
+}) {
+  const meshRef = useRef<Mesh>(null)
+
+  // Colores por estado
+  const COLOR_BY_STATUS: Record<VesselStatus, string> = {
+    empty:               '#3A3A4A',
+    aging:               '#8B4513',
+    ready_for_sampling:  '#C7A951',
+    ready_to_bottle:     '#6B8E4E',
+    bottled:             '#2A4A2A',
+    maintenance:         '#C75050',
+  }
+  const barrelColor = COLOR_BY_STATUS[vessel.status] ?? '#8B4513'
+  const isTank = !['barrel_new','barrel_refill','quarter_cask','octave','hogshead','butt',
+    'port_pipe','cask_ex_bourbon','cask_ex_sherry','cask_ex_port','cask_ex_wine','cask_ex_rum'].includes(vessel.vessel_type)
+
+  // Altura proporcional al volumen relativo (entre 0.8 y 2.2)
+  const fillRatio = Math.min(vessel.fill_pct / 100, 1)
+  const barrelH = 0.8 + fillRatio * 1.4
+
+  // Pequeña oscilación en selected
+  useFrame(({ clock }) => {
+    if (meshRef.current && isSelected) {
+      meshRef.current.position.y = position[1] + Math.sin(clock.elapsedTime * 3) * 0.04
+    } else if (meshRef.current) {
+      meshRef.current.position.y = position[1]
+    }
+  })
+
+  return (
+    <group position={position} onClick={(e) => { e.stopPropagation(); onClick() }}>
+      {/* Cuerpo de la barrica / depósito */}
+      {isTank ? (
+        <RoundedBox ref={meshRef as any} args={[0.7, barrelH, 0.7]} radius={0.08} smoothness={4}
+          position={[0, barrelH / 2, 0]}
+          castShadow>
+          <meshStandardMaterial
+            color={barrelColor}
+            metalness={isTank ? 0.7 : 0.1}
+            roughness={isTank ? 0.2 : 0.8}
+            emissive={isSelected ? barrelColor : '#000'}
+            emissiveIntensity={isSelected ? 0.3 : 0}
+          />
+        </RoundedBox>
+      ) : (
+        /* Barrica: cilindro con curva (dos conos + cilindro central) */
+        <group ref={meshRef} position={[0, barrelH / 2, 0]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.32, 0.32, barrelH * 0.5, 16]} />
+            <meshStandardMaterial
+              color={barrelColor}
+              roughness={0.75}
+              metalness={0.05}
+              emissive={isSelected ? barrelColor : '#000'}
+              emissiveIntensity={isSelected ? 0.3 : 0}
+            />
+          </mesh>
+          {/* Aros de metal */}
+          {[-barrelH * 0.18, 0, barrelH * 0.18].map((y, i) => (
+            <mesh key={i} position={[0, y, 0]} castShadow>
+              <torusGeometry args={[0.34, 0.018, 8, 24]} />
+              <meshStandardMaterial color="#555" metalness={0.9} roughness={0.2} />
+            </mesh>
+          ))}
+        </group>
+      )}
+
+      {/* Suelo base */}
+      <mesh position={[0, 0.02, 0]} receiveShadow>
+        <cylinderGeometry args={[0.38, 0.38, 0.04, 16]} />
+        <meshStandardMaterial color="#222" roughness={0.9} />
+      </mesh>
+
+      {/* Etiqueta de código */}
+      <Text
+        position={[0, barrelH + 0.35, 0]}
+        fontSize={0.18}
+        color={isSelected ? '#F0EBE1' : '#A39B8B'}
+        anchorX="center"
+        anchorY="middle"
+        maxWidth={1}
+      >
+        {vessel.code}
+      </Text>
+
+      {/* ABV si disponible */}
+      {vessel.current_abv != null && (
+        <Text
+          position={[0, barrelH + 0.12, 0]}
+          fontSize={0.13}
+          color={isSelected ? '#C7A951' : '#6B7A8D'}
+          anchorX="center"
+          anchorY="middle"
+        >
+          {vessel.current_abv.toFixed(1)}%
+        </Text>
+      )}
+    </group>
+  )
+}
+
+// ─── 3D: Vista sala de barricas ───────────────────────────────────────────────
+function BarrelRoom3D({
+  vessels,
+  selectedId,
+  onSelect,
+}: {
+  vessels: AgingVessel[]
+  selectedId: string | null
+  onSelect: (v: AgingVessel) => void
+}) {
+  // Distribuir en filas de hasta 6
+  const COLS = 6
+  const GAP_X = 1.4
+  const GAP_Z = 2.2
+
+  return (
+    <Canvas
+      shadows
+      camera={{ position: [0, 5, 12], fov: 55 }}
+      style={{ background: '#0F0E0D', borderRadius: '1rem', width: '100%', height: '100%' }}
+    >
+      <ambientLight intensity={0.4} />
+      <directionalLight
+        castShadow
+        position={[5, 10, 5]}
+        intensity={1.2}
+        shadow-mapSize={[1024, 1024]}
+      />
+      <pointLight position={[-5, 6, -5]} intensity={0.5} color="#B87333" />
+
+      {/* Suelo */}
+      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+        <planeGeometry args={[40, 40]} />
+        <meshStandardMaterial color="#1A1410" roughness={0.95} />
+      </mesh>
+
+      <Suspense fallback={null}>
+        {vessels.map((v, i) => {
+          const col = i % COLS
+          const row = Math.floor(i / COLS)
+          const xOffset = ((vessels.length > COLS ? COLS : vessels.length) - 1) * GAP_X / 2
+          const zOffset = (Math.ceil(vessels.length / COLS) - 1) * GAP_Z / 2
+          const pos: [number, number, number] = [
+            col * GAP_X - xOffset,
+            0,
+            row * GAP_Z - zOffset,
+          ]
+          return (
+            <Barrel3D
+              key={v.id}
+              vessel={v}
+              position={pos}
+              isSelected={v.id === selectedId}
+              onClick={() => onSelect(v)}
+            />
+          )
+        })}
+      </Suspense>
+
+      <OrbitControls
+        enablePan={true}
+        enableZoom={true}
+        enableRotate={true}
+        minDistance={3}
+        maxDistance={30}
+        maxPolarAngle={Math.PI / 2.1}
+      />
+    </Canvas>
+  )
+}
+
 type TabId = 'all' | 'barrels' | 'tanks'
 const VESSEL_TABS: { id: TabId; label: string }[] = [
   { id: 'all',     label: 'Todo' },
@@ -800,7 +986,7 @@ export default function KeezerPage() {
   useUIStore()
 
   const [activeTab, setActiveTab] = useState<TabId>('all')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | '3d'>('grid')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<VesselStatus | 'all'>('all')
   const [selectedVessel, setSelectedVessel] = useState<AgingVessel | null>(null)
@@ -971,7 +1157,7 @@ export default function KeezerPage() {
         </select>
 
         <div className="flex gap-1 ml-auto">
-          {(['grid', 'list'] as const).map(v => (
+          {(['grid', 'list', '3d'] as const).map(v => (
             <button key={v} onClick={() => setViewMode(v)}
               className="w-8 h-8 rounded-lg text-sm flex items-center justify-center border"
               style={{
@@ -979,7 +1165,7 @@ export default function KeezerPage() {
                 borderColor: viewMode === v ? '#B87333' : 'rgba(255,255,255,0.08)',
                 color: viewMode === v ? '#FFF' : '#6B7A8D',
               }}>
-              {v === 'grid' ? '▦' : '☰'}
+              {v === 'grid' ? '▦' : v === 'list' ? '☰' : '⬡'}
             </button>
           ))}
         </div>
@@ -1004,6 +1190,20 @@ export default function KeezerPage() {
             </div>
           ) : filtered.length === 0 ? (
             <EmptyState onAdd={openCreate} hasFilter={search !== '' || statusFilter !== 'all'} />
+          ) : viewMode === '3d' ? (
+            <div className="h-[600px] rounded-2xl overflow-hidden border" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+              {/* Instrucciones de control */}
+              <div className="absolute z-10 mt-2 ml-2 pointer-events-none">
+                <span className="text-[10px] px-2 py-1 rounded-lg" style={{ background: 'rgba(0,0,0,0.6)', color: '#6B7A8D' }}>
+                  Arrastra para rotar · Scroll para zoom · Click en barrica para seleccionar
+                </span>
+              </div>
+              <BarrelRoom3D
+                vessels={filtered}
+                selectedId={selectedVessel?.id ?? null}
+                onSelect={(v) => setSelectedVessel(v.id === selectedVessel?.id ? null : v)}
+              />
+            </div>
           ) : viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               <AnimatePresence mode="popLayout">

@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import enum
-from typing import TYPE_CHECKING, Any, Optional
+import uuid
+from datetime import date
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import (
-    JSON,
-    BigInteger,
-    Enum,
+    Date,
     Float,
     ForeignKey,
     Integer,
@@ -81,7 +81,8 @@ class AgingVessel(Base, TimestampMixin):
     """Barrica o depósito de envejecimiento de un destilado."""
     __tablename__ = "aging_vessels"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, index=True)
+    # UUID generado en Python (DB almacena como VARCHAR(36))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
     distillery_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("distilleries.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -92,51 +93,38 @@ class AgingVessel(Base, TimestampMixin):
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # ── Tipo y madera ─────────────────────────────────────────────────────────
-    vessel_type: Mapped[VesselType] = mapped_column(
-        Enum(VesselType, name="vessel_type_enum"), nullable=False, default=VesselType.barrel_new
-    )
-    wood_type: Mapped[WoodType] = mapped_column(
-        Enum(WoodType, name="wood_type_enum"), nullable=False, default=WoodType.american_white_oak
-    )
-    toast_level: Mapped[ToastLevel] = mapped_column(
-        Enum(ToastLevel, name="toast_level_enum"), nullable=False, default=ToastLevel.medium
-    )
+    # Stored as VARCHAR in DB (migration 005 uses String columns)
+    vessel_type: Mapped[str] = mapped_column(String(50), nullable=False, default="barrel_new")
+    wood_type: Mapped[str] = mapped_column(String(50), nullable=False, default="american_white_oak")
+    toast_level: Mapped[str] = mapped_column(String(30), nullable=False, default="medium")
 
     # ── Capacidad y llenado ───────────────────────────────────────────────────
     capacity_liters: Mapped[float] = mapped_column(Float, nullable=False, default=200.0)
-    # Litros actuales del destilado
     current_volume_liters: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
-    # Graduación alcohólica del destilado en la barrica (en %)
     current_abv: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
 
     # ── Contenido ─────────────────────────────────────────────────────────────
-    # Tipo de spirit: whiskey, rum, gin, brandy, vodka, etc.
     spirit_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     spirit_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
-    # FK al lote de origen (opcional, puede estar null si no se usa el módulo de lotes)
-    source_batch_id: Mapped[Optional[int]] = mapped_column(
-        BigInteger, ForeignKey("distillation_runs.id", ondelete="SET NULL"), nullable=True
-    )
+    # Sin FK hasta que exista la tabla distillation_runs
+    source_batch_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
 
     # ── Estado y fechas ───────────────────────────────────────────────────────
-    status: Mapped[VesselStatus] = mapped_column(
-        Enum(VesselStatus, name="vessel_status_enum"), nullable=False, default=VesselStatus.empty
-    )
-    fill_date: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)   # ISO date
-    target_date: Mapped[Optional[str]] = mapped_column(String(10), nullable=True) # fecha objetivo de embotellado
+    status: Mapped[str] = mapped_column(String(30), nullable=False, default="empty")
+    fill_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    target_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     # ── Ubicación en la nave ──────────────────────────────────────────────────
-    location_row: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)   # ej. "A"
-    location_position: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # ej. 3
+    location_row: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    location_position: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     location_notes: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
 
-    # ── Histórico de samplings (JSON array) ───────────────────────────────────
+    # ── Histórico de samplings (serializado como JSON en columna Text) ─────────────────────────────────────────────────
     # [{date, abv, color_srm, tasting_notes, sampled_by}]
-    samplings: Mapped[Optional[list[Any]]] = mapped_column(JSON, nullable=True, default=list)
+    samplings: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    # ── Técnicas modernas de aging (JSON) ────────────────────────────────────
-    # {ultrasonic: bool, pressure_cycling: bool, temp_cycling: bool, ...}
-    aging_techniques: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    # ── Técnicas modernas de aging (serializado como JSON en columna Text) ───────────────────────────────────────────
+    aging_techniques: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # ─── Relationships ────────────────────────────────────────────────────────
     distillery: Mapped["Distillery"] = relationship("Distillery", back_populates="aging_vessels")
