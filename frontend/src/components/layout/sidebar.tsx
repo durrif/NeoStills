@@ -3,6 +3,7 @@ import { Link, useRouterState } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
+  type LucideIcon,
   LayoutDashboard, Beaker, FlaskConical, BookOpen,
   Package, ShoppingCart, FileText, Settings,
   ChevronLeft, ChevronRight, Cpu, Archive, BarChart3, Bot,
@@ -16,8 +17,7 @@ import { cn } from '@/lib/utils'
 
 interface NavItem {
   to: string
-  icon: React.ElementType
-  labelKey: string
+  icon: LucideIcon
 }
 
 interface NavGroup {

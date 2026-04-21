@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import {
+  type LucideIcon,
   Package,
   Beaker,
   FlaskConical,
@@ -136,7 +137,7 @@ interface MetricCardProps {
   label: string
   value: number | string
   note: string
-  icon: React.ElementType
+  icon: LucideIcon
   pattern: readonly number[]
   sparkColor: string
   glow?: boolean
@@ -360,7 +361,7 @@ export default function DashboardPage() {
   type Alert = {
     id: string
     type: 'danger' | 'warning' | 'success' | 'info'
-    icon: React.ElementType
+    icon: LucideIcon
     title: string
     detail: string
   }

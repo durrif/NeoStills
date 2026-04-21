@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Mail, Lock, User, Building2, Eye, EyeOff } from 'lucide-react'
+import { type LucideIcon, Mail, Lock, User, Building2, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
 import { Logo } from '@/components/ui/logo'
@@ -75,7 +75,7 @@ export default function RegisterPage() {
     }
   }
 
-  const fields: { key: keyof FormData; label: string; type: string; Icon: React.ElementType; autoComplete: string }[] = [
+  const fields: { key: keyof FormData; label: string; type: string; Icon: LucideIcon; autoComplete: string }[] = [
     { key: 'email', label: t('auth.email'), type: 'email', Icon: Mail, autoComplete: 'email' },
     { key: 'full_name', label: t('auth.full_name'), type: 'text', Icon: User, autoComplete: 'name' },
     { key: 'brewery_name', label: t('auth.brewery_name'), type: 'text', Icon: Building2, autoComplete: 'organization' },

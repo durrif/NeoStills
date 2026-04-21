@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  type LucideIcon,
   Search, LayoutDashboard, Beaker, FlaskConical, BookOpen,
   Package, ShoppingCart, Cpu, Archive, BarChart3, Bot, Settings,
   ArrowRight,
@@ -13,9 +14,7 @@ interface CommandItem {
   id: string
   label: string
   category: string
-  icon: React.ElementType
-  action: () => void
-  keywords?: string
+  icon: LucideIcon
 }
 
 interface CommandPaletteProps {
