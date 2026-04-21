@@ -270,12 +270,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
       if (invalidStill) {
         errors.push('Todos los alambiques deben tener capacidad válida')
       }
-      if (state.profile.type === 'professional') {
-        const dim = state.facility.dimensions
-        if (!dim || dim.width_m <= 0 || dim.depth_m <= 0 || dim.height_m <= 0) {
-          errors.push('Las dimensiones de la nave son obligatorias para craft_distillery')
-        }
-      }
+      // Dimensions are optional in step 2 — craft distillery users can fill them later
     }
 
     return {
