@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { AreaChart, Area, ResponsiveContainer } from 'recharts'
-import { Droplets, RotateCcw, Beaker, FlaskConical, Activity } from 'lucide-react'
+import { type LucideIcon, Droplets, RotateCcw, Beaker, FlaskConical, Activity } from 'lucide-react'
 import { useUIStore } from '@/stores/ui-store'
 import { useWaterStore } from '@/stores/water-store'
 import { WATER_PROFILES } from '@/data/water-profiles'
@@ -59,7 +59,7 @@ function LabMetricCard({
   label: string
   value: string
   note: string
-  icon: React.ElementType
+  icon: LucideIcon
   accent: string
   pattern: readonly number[]
 }) {
