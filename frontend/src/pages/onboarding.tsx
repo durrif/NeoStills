@@ -141,7 +141,6 @@ export default function OnboardingPage() {
   const hasPendingStillData =
     currentStep === 2 &&
     stills.length === 0 &&
-    !!facility.name.trim() &&
     Number(stillCapacity) > 0
   const canContinue = (validation.valid || hasPendingStillData) && !saving
   const canSkip = (currentStep === 3 || currentStep === 4) && !saving

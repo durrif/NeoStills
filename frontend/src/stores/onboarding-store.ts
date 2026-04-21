@@ -260,9 +260,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
 
     if (step === 2) {
-      if (!state.facility.name.trim()) {
-        errors.push('Nombre de destilería requerido')
-      }
+      // facility.name is optional — user can fill it later
       if (state.stills.length < 1) {
         errors.push('Debes configurar al menos 1 alambique')
       }
