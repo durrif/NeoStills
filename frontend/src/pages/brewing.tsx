@@ -608,13 +608,15 @@ function Still3DScene({ stillType, phase }: { stillType: StillType; phase?: stri
 
   return (
     <>
-      <fog attach="fog" args={['#1A1410', 14, 38]} />
+      <fog attach="fog" args={['#1A1410', 22, 55]} />
       <color attach="background" args={['#1A1410']} />
 
-      <hemisphereLight args={['#443322', '#1A1008', 0.45]} />
-      <ambientLight intensity={0.25} color="#FFDDAA" />
-      <pointLight position={[3, 7, 3]} intensity={1.2} color="#FFE8CC" distance={16} castShadow />
-      <pointLight position={[-4, 5, -2]} intensity={0.6} color="#FFCC88" distance={12} />
+      <hemisphereLight args={['#886644', '#3A2010', 1.2]} />
+      <ambientLight intensity={1.0} color="#FFEECC" />
+      <pointLight position={[0, 9, 2]} intensity={3.5} color="#FFEECC" distance={22} castShadow />
+      <pointLight position={[4, 6, 4]} intensity={2.0} color="#FFD580" distance={16} />
+      <pointLight position={[-4, 6, 4]} intensity={2.0} color="#FFD580" distance={16} />
+      <pointLight position={[0, 4, 6]} intensity={1.5} color="#FFF0D8" distance={14} />
 
       <DistilleryFloor />
       <WallTorch position={[-8.6, 3.5, -3]} />
@@ -670,7 +672,7 @@ function Still3DPanel({ currentPhase }: { currentPhase?: string }) {
         <Canvas
           shadows
           camera={{ position: [4, 5, 9], fov: 50 }}
-          gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }}
+          gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.8 }}
         >
           <Still3DScene stillType={stillType} phase={currentPhase} />
         </Canvas>
