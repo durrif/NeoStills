@@ -3,7 +3,7 @@ import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronDown, Edit2, Trash2, Plus, Minus, Package,
-  MapPin, FlaskConical, Tag, Wheat, Leaf, Pill, Beaker,
+  MapPin, Wheat, Leaf, Pill, Beaker, Apple, FlaskRound, Droplets,
 } from 'lucide-react'
 import { cn, daysUntilExpiry, categoryColor, categoryIcon, stockStatus } from '@/lib/utils'
 import { ExpiryBadge } from './expiry-badge'
@@ -21,21 +21,25 @@ interface IngredientCardProps {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  malta_base: 'Malta base',
-  malta_especial: 'Malta especial',
-  malta_otra: 'Otra malta',
-  lupulo: 'Lúpulo',
+  cereal_base: 'Cereal base',
+  cereal_especial: 'Cereal especial',
+  fruta: 'Fruta',
+  botanico: 'Botanico',
   levadura: 'Levadura',
+  azucar: 'Azucar / melaza',
+  agua_quimica: 'Quimica de agua',
   adjunto: 'Adjunto',
   otro: 'Otro',
 }
 
 const CAT_ICON_MAP: Record<string, typeof Wheat> = {
-  malta_base: Wheat,
-  malta_especial: Wheat,
-  malta_otra: Wheat,
-  lupulo: Leaf,
+  cereal_base: Wheat,
+  cereal_especial: Wheat,
+  fruta: Apple,
+  botanico: Leaf,
   levadura: Pill,
+  azucar: FlaskRound,
+  agua_quimica: Droplets,
   adjunto: Beaker,
   otro: Package,
 }

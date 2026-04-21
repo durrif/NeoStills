@@ -11,8 +11,9 @@ from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_current_distillery, get_db
 from app.core.config import settings
+from app.models.brewery import Distillery
 from app.models.recipe import Recipe, RecipeStatus
 from app.schemas.recipe import (
     CanBrewItem,
@@ -45,12 +46,9 @@ async def list_recipes(
     skip: int = 0,
     limit: int = Query(50, le=200),
     current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
-    brewery = current_user.distillery
-    if not distillery:
-        raise HTTPException(status_code=400, detail="No se encontró destilería")
-
     q = select(Recipe).where(Recipe.distillery_id == distillery.id)
     if status_filter:
         q = q.where(Recipe.status == status_filter)
@@ -66,13 +64,10 @@ async def list_recipes(
 async def create_recipe(
     data: RecipeCreate,
     current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
-    brewery = current_user.distillery
-    if not distillery:
-        raise HTTPException(status_code=400, detail="No se encontró destilería")
-
-    recipe = Recipe(brewery_id=distillery.id, **data.model_dump())
+    recipe = Recipe(distillery_id=distillery.id, **data.model_dump())
     db.add(recipe)
     await db.commit()
     await db.refresh(recipe)
@@ -82,13 +77,13 @@ async def create_recipe(
 @router.get("/{recipe_id}", response_model=RecipeOut)
 async def get_recipe(
     recipe_id: int,
-    current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     recipe = await db.scalar(
         select(Recipe).where(
             Recipe.id == recipe_id,
-            Recipe.distillery_id == current_user.distillery.id,
+            Recipe.distillery_id == distillery.id,
         )
     )
     if not recipe:
@@ -100,13 +95,13 @@ async def get_recipe(
 async def update_recipe(
     recipe_id: int,
     data: RecipeUpdate,
-    current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     recipe = await db.scalar(
         select(Recipe).where(
             Recipe.id == recipe_id,
-            Recipe.distillery_id == current_user.distillery.id,
+            Recipe.distillery_id == distillery.id,
         )
     )
     if not recipe:
@@ -122,13 +117,13 @@ async def update_recipe(
 @router.delete("/{recipe_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_recipe(
     recipe_id: int,
-    current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     recipe = await db.scalar(
         select(Recipe).where(
             Recipe.id == recipe_id,
-            Recipe.distillery_id == current_user.distillery.id,
+            Recipe.distillery_id == distillery.id,
         )
     )
     if not recipe:
@@ -141,13 +136,10 @@ async def delete_recipe(
 async def import_beerxml(
     file: UploadFile = File(...),
     current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     """Import a BeerXML 1.0 file and create a new recipe."""
-    brewery = current_user.distillery
-    if not distillery:
-        raise HTTPException(status_code=400, detail="No se encontró destilería")
-
     # Validate file type
     ALLOWED_EXTENSIONS = (".xml", ".beerxml")
     ALLOWED_MIMES = ("text/xml", "application/xml", "application/octet-stream")
@@ -169,7 +161,7 @@ async def import_beerxml(
     except (ET.ParseError, ValueError) as exc:
         raise HTTPException(status_code=422, detail=f"Invalid BeerXML: {exc}") from exc
 
-    recipe = Recipe(brewery_id=distillery.id, **recipe_data)
+    recipe = Recipe(distillery_id=distillery.id, **recipe_data)
     db.add(recipe)
     await db.commit()
     await db.refresh(recipe)
@@ -179,16 +171,12 @@ async def import_beerxml(
 @router.post("/import/brewers-friend/{bf_recipe_id}", response_model=RecipeOut, status_code=status.HTTP_201_CREATED)
 async def import_brewers_friend(
     bf_recipe_id: str,
-    current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     """Fetch a recipe from Brewer's Friend API and import it."""
     if not settings.BREWERS_FRIEND_API_KEY:
         raise HTTPException(status_code=503, detail="Brewer's Friend API key not configured")
-
-    brewery = current_user.distillery
-    if not distillery:
-        raise HTTPException(status_code=400, detail="No se encontró destilería")
 
     async with httpx.AsyncClient(timeout=15) as client:
         resp = await client.get(
@@ -204,20 +192,17 @@ async def import_brewers_friend(
     raw: dict = resp.json()
     name = raw.get("name", "BF Import")
     recipe = Recipe(
-        brewery_id=distillery.id,
+        distillery_id=distillery.id,
         name=name,
-        style=raw.get("style_name"),
         og=raw.get("og"),
         fg=raw.get("fg"),
-        abv=raw.get("abv"),
-        ibu=raw.get("ibu"),
-        srm=raw.get("color"),
         batch_size_liters=raw.get("batch_size"),
-        efficiency_pct=raw.get("efficiency"),
-        fermentables=raw.get("fermentables", []),
-        hops=raw.get("hops", []),
-        yeasts=raw.get("yeasts", []),
-        brewers_friend_id=str(bf_recipe_id),
+        spirit_type=raw.get("spirit_type") or raw.get("style_name"),
+        wash_abv=raw.get("abv"),
+        cereals=raw.get("fermentables", []),
+        botanicals=raw.get("hops", []),
+        fermentation_yeasts=raw.get("yeasts", []),
+        notes=f"Brewer's Friend import {bf_recipe_id}",
     )
     db.add(recipe)
     await db.commit()
@@ -234,7 +219,7 @@ async def import_brewers_friend(
 @router.get("/{recipe_id}/can-brew", response_model=CanBrewResult)
 async def check_can_brew(
     recipe_id: int,
-    current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     """Check if we have enough inventory to brew this recipe."""
@@ -243,7 +228,7 @@ async def check_can_brew(
     recipe = await db.scalar(
         select(Recipe).where(
             Recipe.id == recipe_id,
-            Recipe.distillery_id == current_user.distillery.id,
+            Recipe.distillery_id == distillery.id,
         )
     )
     if not recipe:
@@ -251,16 +236,26 @@ async def check_can_brew(
 
     # Gather all ingredients from the recipe
     needed: list[dict[str, Any]] = []
-    for f in (recipe.fermentables or []):
-        needed.append({"name": f.get("name", ""), "amount": f.get("amount_kg", 0), "unit": "kg"})
-    for h in (recipe.hops or []):
-        needed.append({"name": h.get("name", ""), "amount": (h.get("amount_g", 0) or 0) / 1000, "unit": "kg"})
-    for y in (recipe.yeasts or []):
-        needed.append({"name": y.get("name", ""), "amount": 1, "unit": "pkt"})
+    for cereal in (recipe.cereals or []):
+        needed.append({"name": cereal.get("name", ""), "amount": cereal.get("amount_kg", 0), "unit": "kg"})
+    for botanical in (recipe.botanicals or []):
+        needed.append({"name": botanical.get("name", ""), "amount": (botanical.get("amount_g", 0) or 0) / 1000, "unit": "kg"})
+    for yeast in (recipe.fermentation_yeasts or []):
+        needed.append({
+            "name": yeast.get("name", ""),
+            "amount": yeast.get("amount_units") or yeast.get("amount") or 1,
+            "unit": yeast.get("unit", "pkt"),
+        })
+    for adjunct in (recipe.adjuncts or []):
+        needed.append({
+            "name": adjunct.get("name", ""),
+            "amount": adjunct.get("amount", 0),
+            "unit": adjunct.get("unit", "kg"),
+        })
 
     # Get inventory
     inv_result = await db.execute(
-        select(Ingredient).where(Ingredient.distillery_id == current_user.distillery.id)
+        select(Ingredient).where(Ingredient.distillery_id == distillery.id)
     )
     inventory = {ing.name.lower(): ing for ing in inv_result.scalars().all()}
 
@@ -295,7 +290,7 @@ async def check_can_brew(
 @router.post("/{recipe_id}/brew", status_code=status.HTTP_201_CREATED)
 async def start_brew_from_recipe(
     recipe_id: int,
-    current_user=Depends(get_current_user),
+    distillery: Distillery = Depends(get_current_distillery),
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new brew session from a recipe."""
@@ -304,20 +299,24 @@ async def start_brew_from_recipe(
     recipe = await db.scalar(
         select(Recipe).where(
             Recipe.id == recipe_id,
-            Recipe.distillery_id == current_user.distillery.id,
+            Recipe.distillery_id == distillery.id,
         )
     )
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     session_obj = DistillationRun(
-        distillery_id=current_user.distillery.id,
+        distillery_id=distillery.id,
         recipe_id=recipe.id,
         name=recipe.name,
         phase=SessionPhase.planned,
-        planned_batch_liters=recipe.batch_size_liters,
+        still_type=recipe.distillation_method.value if recipe.distillation_method else None,
+        wash_volume_liters=recipe.wash_volume_liters,
         planned_og=recipe.og,
         planned_fg=recipe.fg,
+        wash_abv=recipe.wash_abv,
+        target_abv=recipe.target_abv,
+        stripping_run_enabled=recipe.stripping_run_enabled,
     )
     db.add(session_obj)
     await db.commit()

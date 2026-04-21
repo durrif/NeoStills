@@ -75,7 +75,7 @@ export function MobileAvatarSheet() {
             <div className="flex items-center justify-between px-4 py-2">
               <div className="flex items-center gap-2">
                 <Sparkles size={16} className="text-accent-purple" />
-                <span className="text-sm font-semibold text-text-primary">El Genio Cervecero</span>
+                <span className="text-sm font-semibold text-text-primary">El Genio Destilador</span>
               </div>
               <button
                 onClick={dismiss}
@@ -153,7 +153,7 @@ export function MobileAvatarSheet() {
                       className="p-3 rounded-xl bg-white/[0.04] border border-white/[0.06]"
                     >
                       <p className="text-sm text-text-tertiary italic">
-                        ¿En qué puedo ayudarte, maestro cervecero?
+                        ¿En qué puedo ayudarte, maestro destilador?
                       </p>
                     </motion.div>
                   )}

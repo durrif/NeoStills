@@ -2,18 +2,18 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ChevronRight, ChevronLeft, Check, Beer, Thermometer,
+  ChevronRight, ChevronLeft, Check, Thermometer,
   Gauge, Droplets, Settings, Wifi, X,
 } from 'lucide-react'
-import { KEG_CATALOG, type KegSpec } from '@/data/kegs'
+import { KEG_CATALOG } from '@/data/kegs'
 import { useKeezerStore, type KeezerType, type KeezerConfig } from '@/stores/keezer-store'
 
 /* ── Step data ──────────────────────────────────────────────────────────────── */
 
 const KEEZER_TYPES: { id: KeezerType; label: string; desc: string; icon: string }[] = [
-  { id: 'chest_freezer', label: 'Chest Freezer (Keezer)', icon: '🧊', desc: 'Arcón congelador con collar de madera y grifos — la opción clásica' },
-  { id: 'fridge_tower', label: 'Nevera con torre de grifos', icon: '🍺', desc: 'Nevera vertical con torre de grifos en la parte superior' },
-  { id: 'jockey_box', label: 'Jockey Box (portátil)', icon: '📦', desc: 'Dispensador portátil con serpentín frío — ideal para eventos' },
+  { id: 'chest_freezer', label: 'Cámara fría con líneas', icon: '🧊', desc: 'Arcón o armario refrigerado con líneas de servicio o muestreo' },
+  { id: 'fridge_tower', label: 'Nevera con columna', icon: '🗼', desc: 'Nevera vertical con columna superior para servicio controlado' },
+  { id: 'jockey_box', label: 'Estación portátil', icon: '📦', desc: 'Módulo portátil para eventos, muestras o servicio temporal' },
   { id: 'custom', label: 'Personalizado', icon: '🔧', desc: 'Configuración a medida para setups únicos' },
 ]
 
@@ -40,7 +40,7 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
   const [hasTempSensor, setHasTempSensor] = useState(config.hasTempSensor)
   const [hasPressureSensor, setHasPressureSensor] = useState(config.hasPressureSensor)
 
-  const steps = ['Tipo de keezer', 'Número de grifos', 'Tipo de barril', 'Sensores']
+  const steps = ['Tipo de instalación', 'Número de líneas', 'Tipo de recipiente', 'Sensores']
   const totalSteps = steps.length
 
   const canNext = step < totalSteps - 1
@@ -84,7 +84,7 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
             </div>
             <div>
               <h2 className="text-lg font-bold text-text-primary font-display">
-                Configurar Keezer
+                Configurar Aging Room
               </h2>
               <p className="text-xs text-text-tertiary">
                 Paso {step + 1} de {totalSteps} — {steps[step]}
@@ -150,7 +150,7 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
                 exit={{ opacity: 0, x: -20 }}
               >
                 <p className="text-sm text-text-secondary mb-4">
-                  ¿Cuántos grifos tiene tu keezer?
+                  ¿Cuántas líneas de servicio o muestreo tiene tu sala?
                 </p>
                 <div className="grid grid-cols-4 gap-3">
                   {TAP_OPTIONS.map((n) => (
@@ -165,7 +165,7 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
                     >
                       <span className="text-2xl font-bold font-display">{n}</span>
                       <span className="text-[10px] mt-0.5">
-                        {n === 1 ? 'grifo' : 'grifos'}
+                        {n === 1 ? 'línea' : 'líneas'}
                       </span>
                     </button>
                   ))}
@@ -183,7 +183,7 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
                 className="space-y-3"
               >
                 <p className="text-sm text-text-secondary mb-2">
-                  Selecciona el tipo de barril para cada grifo:
+                  Selecciona el tipo de recipiente para cada línea:
                 </p>
                 <div className="max-h-[240px] overflow-y-auto space-y-2 pr-1">
                   {Array.from({ length: tapCount }, (_, i) => (
@@ -226,9 +226,9 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
                   ¿Qué sensores tienes instalados? (opcional)
                 </p>
                 {[
-                  { key: 'flow', label: 'Caudalímetro (Flow Meter)', desc: 'Mide el volumen de cada servicio automáticamente', icon: Droplets, color: '#42A5F5', checked: hasFlowMeter, toggle: () => setHasFlowMeter(!hasFlowMeter) },
-                  { key: 'temp', label: 'Sensor de temperatura', desc: 'Monitoriza la temperatura interior del keezer', icon: Thermometer, color: '#7CB342', checked: hasTempSensor, toggle: () => setHasTempSensor(!hasTempSensor) },
-                  { key: 'pressure', label: 'Sensor de presión', desc: 'Monitoriza la presión de CO₂ en cada barril', icon: Gauge, color: '#AB47BC', checked: hasPressureSensor, toggle: () => setHasPressureSensor(!hasPressureSensor) },
+                  { key: 'flow', label: 'Caudalímetro (Flow Meter)', desc: 'Mide el volumen de cada salida automáticamente', icon: Droplets, color: '#42A5F5', checked: hasFlowMeter, toggle: () => setHasFlowMeter(!hasFlowMeter) },
+                  { key: 'temp', label: 'Sensor de temperatura', desc: 'Monitoriza la temperatura interior del Aging Room', icon: Thermometer, color: '#7CB342', checked: hasTempSensor, toggle: () => setHasTempSensor(!hasTempSensor) },
+                  { key: 'pressure', label: 'Sensor de presión', desc: 'Monitoriza la presión de cada línea o recipiente', icon: Gauge, color: '#B87333', checked: hasPressureSensor, toggle: () => setHasPressureSensor(!hasPressureSensor) },
                 ].map((sensor) => (
                   <button
                     key={sensor.key}
@@ -263,7 +263,7 @@ export default function KeezerConfigWizard({ onClose }: WizardProps) {
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/5 border border-blue-500/15 mt-4">
                   <Wifi size={14} className="text-blue-400 shrink-0" />
                   <p className="text-xs text-text-secondary">
-                    Los sensores se configuran a través de la página de Dispositivos. Aquí solo indicamos la presencia.
+                    Los sensores se configuran desde Dispositivos. Aquí solo indicamos qué hardware está presente.
                   </p>
                 </div>
               </motion.div>

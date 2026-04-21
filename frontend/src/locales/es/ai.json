@@ -1,13 +1,13 @@
 {
-  "assistant_name": "Brewmaster",
-  "welcome": "¡Hola! Soy Brewmaster, tu asistente destilador. ¿En qué puedo ayudarte hoy?",
+  "assistant_name": "Genio Destilador",
+  "welcome": "Hola. Soy el Genio Destilador de NeoStills. Puedo ayudarte con recetas, cortes, fermentación, inventario y barricas.",
   "new_chat": "Nueva",
   "chat_history": "Historial",
   "no_conversations": "Sin conversaciones aún",
-  "placeholder": "Pregúntame cualquier cosa sobre tu cervecería...",
+  "placeholder": "Pregúntame cualquier cosa sobre tu destilería...",
   "context": {
     "inventory": "Contexto: Inventario",
-    "brewing": "Contexto: Elaboración activa",
+    "brewing": "Contexto: Destilación activa",
     "fermentation": "Contexto: Fermentación",
     "recipes": "Contexto: Recetas",
     "shop": "Contexto: Tienda",
@@ -15,29 +15,30 @@
   },
   "quick_actions": {
     "inventory": [
-      "¿Qué puedo elaborar con lo que tengo?",
-      "¿Qué ingredientes caducan pronto?",
-      "¿Cuáles son mis niveles de stock más bajos?"
+      "¿Qué destilado puedo preparar con lo que tengo?",
+      "¿Qué ingredientes o botánicos debo usar primero?",
+      "¿Qué materias primas están por debajo de mínimos?"
     ],
     "brewing": [
       "¿Cuánto tiempo falta para este paso?",
+      "¿Qué corte debería vigilar ahora?",
       "¿Cuál es la temperatura correcta para el macerado?",
-      "Pasa al siguiente paso"
+      "Prepara el siguiente paso del lote"
     ],
     "fermentation": [
       "¿Cómo va la fermentación?",
       "Analiza la curva de gravedad",
-      "¿Cuándo estará lista para envasar?"
+      "¿Cuándo estará lista para destilar?"
     ],
     "shop": [
-      "Busca el mejor precio para malta Pale Ale",
-      "¿Dónde comprar lúpulo Citra más barato?",
+      "Busca el mejor precio para cebada malteada",
+      "¿Dónde comprar botánicos de gin al mejor precio?",
       "Calcula el coste de mi próxima receta"
     ],
     "default": [
       "Recomiéndame una receta con mi inventario",
-      "¿Cuál es el estado de mi cervecería?",
-      "Ayúdame a planificar mi próxima elaboración"
+      "¿Cuál es el estado de mi destilería?",
+      "Ayúdame a planificar mi próximo lote"
     ]
   },
   "errors": {

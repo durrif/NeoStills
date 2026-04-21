@@ -1,6 +1,6 @@
 // src/components/recipes/recipe-detail.tsx
 import { useTranslation } from 'react-i18next'
-import { Beaker, Clock, Droplets, Flame, Loader2, Zap } from "lucide-react";
+import { Clock, Droplets, Flame, Loader2, Wheat, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -29,6 +29,8 @@ export function RecipeDetail({ recipe, isLoading = false }: RecipeDetailProps) {
     { label: t('recipes.adjuncts'), items: recipe.adjuncts ?? [] },
   ].filter((s) => s.items.length > 0);
 
+  const ingredientCount = sections.reduce((total, section) => total + section.items.length, 0)
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -48,9 +50,9 @@ export function RecipeDetail({ recipe, isLoading = false }: RecipeDetailProps) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { icon: <Zap className="w-4 h-4 text-amber-400" />, label: "ABV", value: recipe.abv != null ? `${recipe.abv.toFixed(1)}%` : "—" },
-          { icon: <Beaker className="w-4 h-4 text-green-400" />, label: "IBU", value: recipe.ibu != null ? Math.round(recipe.ibu).toString() : "—" },
           { icon: <Droplets className="w-4 h-4 text-blue-400" />, label: t('recipes.volume'), value: recipe.batch_size_liters ? `${recipe.batch_size_liters} L` : "—" },
           { icon: <Clock className="w-4 h-4 text-zinc-400" />, label: "OG", value: recipe.og ? recipe.og.toFixed(3) : "—" },
+          { icon: <Wheat className="w-4 h-4 text-accent-copper" />, label: t('recipes.ingredients'), value: ingredientCount > 0 ? ingredientCount.toString() : "—" },
         ].map(({ icon, label, value }) => (
           <Card key={label} className="bg-zinc-900/60 border-zinc-700">
             <CardContent className="pt-4 pb-3 px-4">

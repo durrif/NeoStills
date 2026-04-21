@@ -42,31 +42,31 @@ const costTrend = [
 ]
 
 const styleDistribution = [
-  { name: 'IPA', value: 5, color: '#F5A623' },
-  { name: 'Amber Ale', value: 3, color: '#D4723C' },
-  { name: 'Wheat Beer', value: 2, color: '#FFF8E7' },
-  { name: 'Stout', value: 2, color: '#2C1810' },
-  { name: 'Pale Ale', value: 1, color: '#7CB342' },
-  { name: 'Lager', value: 1, color: '#42A5F5' },
+  { name: 'Whiskey', value: 5, color: '#B87333' },
+  { name: 'Ron', value: 3, color: '#D4723C' },
+  { name: 'Gin', value: 2, color: '#22E6FF' },
+  { name: 'Vodka', value: 2, color: '#A3FAFF' },
+  { name: 'Brandy', value: 1, color: '#7CB342' },
+  { name: 'Licor', value: 1, color: '#C7A951' },
 ]
 
 const ingredientUsage = [
-  { name: 'Pale Malt', kg: 28 },
-  { name: 'Munich', kg: 8 },
-  { name: 'Crystal 60', kg: 4 },
-  { name: 'Cascade', kg: 1.2 },
-  { name: 'Centennial', kg: 0.9 },
-  { name: 'Citra', kg: 0.8 },
-  { name: 'US-05', kg: 0.3 },
-  { name: 'Wheat Malt', kg: 5 },
+  { name: 'Malta base', kg: 28 },
+  { name: 'Maíz laminado', kg: 8 },
+  { name: 'Centeno', kg: 4 },
+  { name: 'Enebro', kg: 1.2 },
+  { name: 'Coriandro', kg: 0.9 },
+  { name: 'Cáscara cítrica', kg: 0.8 },
+  { name: 'Levadura destilería', kg: 0.3 },
+  { name: 'Trigo', kg: 5 },
 ]
 
 const fermentationPerformance = [
-  { batch: 'IPA #8', og: 1.065, fg: 1.012, attenuation: 81.5, days: 12 },
-  { batch: 'Amber #5', og: 1.052, fg: 1.014, attenuation: 73.1, days: 14 },
-  { batch: 'Stout #3', og: 1.058, fg: 1.016, attenuation: 72.4, days: 18 },
-  { batch: 'Wheat #2', og: 1.048, fg: 1.010, attenuation: 79.2, days: 10 },
-  { batch: 'IPA #9', og: 1.068, fg: 1.011, attenuation: 83.8, days: 11 },
+  { batch: 'Wash #8', og: 1.065, fg: 1.012, attenuation: 81.5, days: 12 },
+  { batch: 'Maíz #5', og: 1.052, fg: 1.014, attenuation: 73.1, days: 14 },
+  { batch: 'Ron #3', og: 1.058, fg: 1.016, attenuation: 72.4, days: 18 },
+  { batch: 'Base gin #2', og: 1.048, fg: 1.010, attenuation: 79.2, days: 10 },
+  { batch: 'Whiskey #9', og: 1.068, fg: 1.011, attenuation: 83.8, days: 11 },
 ]
 
 const seasonalData = [
@@ -94,11 +94,11 @@ const radarData = [
 ]
 
 const supplierComparison = [
-  { name: 'La Tienda del Cervecero', avg_cost: 4.20, orders: 8, rating: 4.5, color: '#F5A623' },
-  { name: 'Cervezomaniacs', avg_cost: 4.80, orders: 5, rating: 4.2, color: '#D4723C' },
+  { name: 'La Tienda del Destilador', avg_cost: 4.20, orders: 8, rating: 4.5, color: '#F5A623' },
+  { name: 'Alcoholnía', avg_cost: 4.80, orders: 5, rating: 4.2, color: '#D4723C' },
   { name: 'Cocinista', avg_cost: 5.10, orders: 3, rating: 4.0, color: '#42A5F5' },
-  { name: 'El Secreto de la Cerveza', avg_cost: 4.50, orders: 6, rating: 4.3, color: '#7CB342' },
-  { name: 'BrewDog DIY', avg_cost: 5.60, orders: 2, rating: 3.8, color: '#AB47BC' },
+  { name: 'The Spirit Times', avg_cost: 4.50, orders: 6, rating: 4.3, color: '#7CB342' },
+  { name: 'Castle Malting', avg_cost: 5.60, orders: 2, rating: 3.8, color: '#AB47BC' },
 ]
 
 const brewingHeatmap = [
@@ -464,11 +464,11 @@ export default function AnalyticsPage() {
               <div className="flex items-center justify-end gap-3 mt-2">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-sm bg-white/[0.04]" />
-                  <span className="text-[10px] text-[#5A6B80]">{t('analytics:no_brew', 'Sin elaboración')}</span>
+                  <span className="text-[10px] text-[#5A6B80]">{t('analytics:no_brew', 'Sin producción')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-sm bg-accent-amber/40" />
-                  <span className="text-[10px] text-[#5A6B80]">{t('analytics:brewed', 'Elaboración')}</span>
+                  <span className="text-[10px] text-[#5A6B80]">{t('analytics:brewed', 'Producción')}</span>
                 </div>
               </div>
             </div>
@@ -477,7 +477,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Brewery Radar Score */}
-      <ChartCard title={t('analytics:brewery_score', 'Perfil de tu cervecería')} delay={0.55}>
+      <ChartCard title={t('analytics:brewery_score', 'Perfil de tu destilería')} delay={0.55}>
         <div className="flex flex-col sm:flex-row items-center gap-5">
           <ResponsiveContainer width={280} height={220}>
             <RadarChart data={radarData}>

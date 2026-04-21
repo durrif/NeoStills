@@ -34,7 +34,7 @@ const connectedDevices: ConnectedDevice[] = [
   {
     id: 'dev-1',
     spec: SUPPORTED_DEVICES[0]!, // iSpindel
-    customName: 'iSpindel "Hop Monster"',
+    customName: 'iSpindel "Wash Tank 1"',
     online: true,
     battery: 78,
     rssi: -42,
@@ -42,13 +42,13 @@ const connectedDevices: ConnectedDevice[] = [
     gravity: 1.018,
     angle: 42.3,
     lastSync: new Date(Date.now() - 2 * 60000).toISOString(),
-    assignedSession: 'IPA West Coast #12',
+    assignedSession: 'Whiskey wash #12',
     firmware: 'v7.3.1',
   },
   {
     id: 'dev-2',
     spec: SUPPORTED_DEVICES[0]!, // iSpindel
-    customName: 'iSpindel "Dark Side"',
+    customName: 'iSpindel "Fermentador 2"',
     online: true,
     battery: 45,
     rssi: -65,
@@ -56,13 +56,13 @@ const connectedDevices: ConnectedDevice[] = [
     gravity: 1.042,
     angle: 38.7,
     lastSync: new Date(Date.now() - 5 * 60000).toISOString(),
-    assignedSession: 'Stout Imperial',
+    assignedSession: 'Rum wash reserva',
     firmware: 'v7.3.1',
   },
   {
     id: 'dev-3',
     spec: SUPPORTED_DEVICES[4]!, // Inkbird
-    customName: 'Inkbird Ferm Chamber',
+    customName: 'Inkbird Sala de fermentación',
     online: true,
     battery: null,
     rssi: -38,

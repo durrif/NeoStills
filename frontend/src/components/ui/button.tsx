@@ -4,16 +4,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-amber-600 text-white hover:bg-amber-700",
+        default: "border border-[#DAB18B33] bg-[linear-gradient(135deg,#F0D4B7_0%,#D7A36E_22%,#B87333_56%,#8B5A2B_100%)] text-[#101522] shadow-[0_14px_36px_rgba(184,115,51,0.26),inset_0_1px_0_rgba(255,245,234,0.3)] hover:-translate-y-px hover:brightness-105",
         destructive: "bg-red-600 text-white hover:bg-red-700",
-        outline: "border border-zinc-600 bg-transparent text-zinc-200 hover:bg-zinc-800 hover:text-white",
-        secondary: "bg-zinc-700 text-zinc-200 hover:bg-zinc-600",
-        ghost: "hover:bg-zinc-800 hover:text-white text-zinc-300",
-        link: "text-amber-400 underline-offset-4 hover:underline",
+        outline: "border border-accent-cobalt/30 bg-bg-card/60 text-text-primary backdrop-blur-md hover:bg-bg-hover hover:border-accent-cobalt/50",
+        secondary: "bg-bg-tertiary text-text-primary hover:bg-bg-hover",
+        ghost: "hover:bg-bg-hover hover:text-text-primary text-text-secondary",
+        link: "text-accent-cyan underline-offset-4 hover:text-accent-copper hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",

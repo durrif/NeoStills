@@ -50,6 +50,8 @@ class Distillery(Base, TimestampMixin):
 
     # Dimensiones del espacio (Digital Twin)
     space_dimensions: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    water_profile_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="neutral")
+    starter_pack: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="none")
 
     # Owner FK
     owner_id: Mapped[int] = mapped_column(

@@ -26,8 +26,10 @@ class DistilleryOut(BaseModel):
     still_type: str | None
     still_capacity_liters: float | None
     usage_type: str
+    space_dimensions: dict | None
     owner_id: StrID
     created_at: datetime
+    updated_at: datetime
 
     model_config = {"from_attributes": True}
 

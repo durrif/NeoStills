@@ -7,10 +7,12 @@ import { useAuthStore } from '@/stores/auth-store'
 import { api } from '@/lib/api'
 import { AppShell } from '@/components/layout/app-shell'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { Logo } from '@/components/ui/logo'
 
 // Lazy-loaded pages
 const LoginPage = lazy(() => import('@/pages/login'))
 const RegisterPage = lazy(() => import('@/pages/register'))
+const OnboardingPage = lazy(() => import('@/pages/onboarding'))
 const DashboardPage = lazy(() => import('@/pages/dashboard'))
 const InventoryPage = lazy(() => import('@/pages/inventory'))
 const BrewingPage = lazy(() => import('@/pages/brewing'))
@@ -33,7 +35,7 @@ const PageLoader = () => {
   return (
   <div className="flex items-center justify-center h-full min-h-48">
     <div className="flex flex-col items-center gap-3">
-      <span className="text-4xl animate-pulse">🍺</span>
+      <Logo size="lg" showTagline animated className="justify-center" />
       <p className="text-sm text-text-secondary">{t('status.loading')}</p>
     </div>
   </div>
@@ -48,6 +50,43 @@ function requireAuth() {
 function requireGuest() {
   const isAuthenticated = useAuthStore.getState().isAuthenticated
   if (isAuthenticated) throw redirect({ to: '/' })
+}
+
+function ProtectedAppLayout() {
+  const navigate = router.navigate
+  const { onboardingLoaded, onboardingStatus } = useAuthStore()
+
+  React.useEffect(() => {
+    if (onboardingLoaded && onboardingStatus && !onboardingStatus.is_complete) {
+      void navigate({ to: '/onboarding', replace: true })
+    }
+  }, [navigate, onboardingLoaded, onboardingStatus])
+
+  if (!onboardingLoaded) return <PageLoader />
+  if (onboardingStatus && !onboardingStatus.is_complete) return <PageLoader />
+
+  return (
+    <ErrorBoundary>
+      <AppShell>
+        <Outlet />
+      </AppShell>
+    </ErrorBoundary>
+  )
+}
+
+function ProtectedOnboardingPage() {
+  const navigate = router.navigate
+  const { onboardingLoaded, onboardingStatus } = useAuthStore()
+
+  React.useEffect(() => {
+    if (onboardingLoaded && onboardingStatus?.is_complete) {
+      void navigate({ to: '/', replace: true })
+    }
+  }, [navigate, onboardingLoaded, onboardingStatus])
+
+  if (!onboardingLoaded) return <PageLoader />
+
+  return <Suspense fallback={<PageLoader />}><OnboardingPage /></Suspense>
 }
 
 // Root route
@@ -68,18 +107,19 @@ const registerRoute = createRoute({
   component: () => <Suspense fallback={<PageLoader />}><RegisterPage /></Suspense>,
 })
 
+const onboardingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/onboarding',
+  beforeLoad: requireAuth,
+  component: ProtectedOnboardingPage,
+})
+
 // App layout route (protected)
 const appRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'app',
   beforeLoad: requireAuth,
-  component: () => (
-    <ErrorBoundary>
-      <AppShell>
-        <Outlet />
-      </AppShell>
-    </ErrorBoundary>
-  ),
+  component: ProtectedAppLayout,
 })
 
 const indexRoute = createRoute({
@@ -181,6 +221,7 @@ const settingsRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
+  onboardingRoute,
   appRoute.addChildren([
     indexRoute,
     inventoryRoute,
@@ -214,25 +255,46 @@ declare module '@tanstack/react-router' {
 }
 
 function AuthBootstrap({ children }: { children: React.ReactNode }) {
-  const { accessToken, user, brewery, setAuth, logout } = useAuthStore()
-  const [ready, setReady] = React.useState(!!user)
+  const { accessToken, logout } = useAuthStore()
+  const [ready, setReady] = React.useState(!accessToken)
 
   React.useEffect(() => {
-    if (accessToken && !user) {
-      api.get<{ user: import('@/lib/types').User; brewery: import('@/lib/types').Brewery | null }>('/v1/auth/me/full')
-        .then((data) => {
-          // Keep existing tokens, just add user+brewery
-          useAuthStore.setState({
-            user: data.user,
-            brewery: data.brewery ?? null,
-          })
-        })
-        .catch(() => logout())
-        .finally(() => setReady(true))
-    } else {
+    let cancelled = false
+
+    if (!accessToken) {
       setReady(true)
+      return () => {
+        cancelled = true
+      }
     }
-  }, [accessToken, user, logout])
+
+    setReady(false)
+
+    Promise.all([
+      api.get<{ user: import('@/lib/types').User; brewery: import('@/lib/types').Brewery | null }>('/v1/auth/me/full'),
+      api.get<import('@/lib/types').OnboardingStatus>('/v1/onboarding/status'),
+    ])
+      .then(([data, onboardingStatus]) => {
+        if (cancelled) return
+        useAuthStore.setState({
+          user: data.user,
+          brewery: data.brewery ?? null,
+          onboardingStatus,
+          onboardingLoaded: true,
+          isAuthenticated: true,
+        })
+      })
+      .catch(() => {
+        if (!cancelled) logout()
+      })
+      .finally(() => {
+        if (!cancelled) setReady(true)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [accessToken, logout])
 
   if (!ready) return <PageLoader />
   return <>{children}</>

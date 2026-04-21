@@ -86,11 +86,11 @@ export function getClSO4Balance(ratio: number): ClSO4Balance {
 }
 
 export const CL_SO4_LABELS: Record<ClSO4Balance, { label: string; color: string }> = {
-  'very-hoppy': { label: 'Muy lupulado', color: '#7CB342' },
-  hoppy:        { label: 'Lupulado', color: '#9CCC65' },
-  balanced:     { label: 'Equilibrado', color: '#F5A623' },
-  malty:        { label: 'Maltoso', color: '#D4723C' },
-  'very-malty': { label: 'Muy maltoso', color: '#EF5350' },
+  'very-hoppy': { label: 'Muy seco', color: '#5F7EA6' },
+  hoppy:        { label: 'Seco', color: '#7D96BA' },
+  balanced:     { label: 'Equilibrado', color: '#D1A178' },
+  malty:        { label: 'Redondo', color: '#B87333' },
+  'very-malty': { label: 'Muy redondo', color: '#7D4A22' },
 }
 
 /* ── Dilution Calculator ─────────────────────────────────────── */

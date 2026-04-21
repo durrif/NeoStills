@@ -65,7 +65,7 @@ export function useInventoryAlerts() {
 export function useCreateIngredient() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Omit<Ingredient, "id" | "brewery_id" | "created_at" | "updated_at">) =>
+    mutationFn: (data: Omit<Ingredient, "id" | "distillery_id" | "brewery_id" | "created_at" | "updated_at">) =>
       api.post<Ingredient>("/v1/inventory", data),
     onSuccess: () => qc.invalidateQueries({ queryKey: INVENTORY_KEY }),
   });

@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import AsyncGenerator
 from typing import Any
+from uuid import uuid4
 
 import pytest
 import pytest_asyncio
@@ -82,11 +83,13 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
 @pytest_asyncio.fixture
 async def test_user(db_session: AsyncSession) -> Any:
     """Create a test user + brewery and return (user, brewery, access_token)."""
-    from app.models.brewery import Brewery
+    from app.models.brewery import Distillery
     from app.models.user import RoleEnum, User
 
+    unique_suffix = uuid4().hex[:8]
+
     user = User(
-        email="test@neostills.es",
+        email=f"test-{unique_suffix}@neostills.es",
         hashed_password=hash_password("Test1234!"),
         full_name="Test Brewer",
         role=RoleEnum.admin,
@@ -95,8 +98,8 @@ async def test_user(db_session: AsyncSession) -> Any:
     db_session.add(user)
     await db_session.flush()
 
-    brewery = Brewery(
-        name="Test Brewery",
+    brewery = Distillery(
+        name="Test Distillery",
         owner_id=user.id,
     )
     db_session.add(brewery)

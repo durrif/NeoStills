@@ -7,6 +7,7 @@ export interface User {
   role: 'admin' | 'brewer'
   is_active: boolean
   preferred_language: 'es' | 'en'
+  distillery_id?: string
   brewery_id?: string
   created_at: string
 }
@@ -17,9 +18,36 @@ export interface Brewery {
   description?: string
   location?: string
   logo_url?: string
+  still_type?: StillType | null
+  still_capacity_liters?: number | null
+  usage_type?: UsageType
+  space_dimensions?: SpaceDimensions | null
   owner_id: string
   created_at: string
-  updated_at: string
+  updated_at?: string
+}
+
+export type Distillery = Brewery
+
+export type StillType = 'pot_still' | 'column_still' | 'reflux_still' | 'alembic' | 'other'
+export type UsageType = 'home' | 'professional'
+
+export interface SpaceDimensions {
+  width_m: number
+  depth_m: number
+  height_m: number
+}
+
+export interface OnboardingStatus {
+  is_complete: boolean
+  missing_fields: string[]
+  distillery_id: number
+  distillery_name: string
+  usage_type: UsageType
+  still_type?: StillType | null
+  still_capacity_liters?: number | null
+  location?: string | null
+  space_dimensions?: SpaceDimensions | null
 }
 
 export interface TokenResponse {
@@ -28,15 +56,18 @@ export interface TokenResponse {
   token_type: 'bearer'
   user?: User
   brewery?: Brewery
+  distillery?: Distillery
 }
 
 // Inventory
 export type IngredientCategory =
-  | 'malta_base'
-  | 'malta_especial'
-  | 'malta_otra'
-  | 'lupulo'
+  | 'cereal_base'
+  | 'cereal_especial'
+  | 'fruta'
+  | 'botanico'
   | 'levadura'
+  | 'azucar'
+  | 'agua_quimica'
   | 'adjunto'
   | 'otro'
 
@@ -44,7 +75,8 @@ export type IngredientUnit = 'kg' | 'g' | 'l' | 'ml' | 'pkt' | 'unit'
 
 export interface Ingredient {
   id: string
-  brewery_id: string
+  distillery_id: string
+  brewery_id?: string
   name: string
   category: IngredientCategory
   quantity: number
@@ -107,20 +139,34 @@ export interface MashStep {
 
 export interface Recipe {
   id: string
-  brewery_id: string
+  distillery_id?: string
+  brewery_id?: string
   name: string
+  spirit_type?: string
   style?: string
   style_code?: string
   description?: string
   status: string
+  distillation_method?: 'pot_still' | 'column_still' | 'reflux_still' | 'alembic'
+  stripping_run_enabled?: boolean
+  wash_volume_liters?: number
   batch_size_liters?: number
+  fermentation_tank_capacity_liters?: number
+  fruit_brix?: number
   efficiency_pct?: number
   og?: number
   fg?: number
   abv?: number
+  wash_abv?: number
+  target_abv?: number
+  spirit_yield_liters?: number
   ibu?: number
   srm?: number
   ebc?: number
+  cut_points?: Array<Record<string, unknown>>
+  cereals?: RecipeIngredient[]
+  botanicals?: RecipeIngredient[]
+  fermentation_yeasts?: RecipeIngredient[]
   fermentables?: RecipeIngredient[]
   hops?: RecipeIngredient[]
   yeasts?: RecipeIngredient[]
@@ -235,6 +281,7 @@ export type PriceResult = PriceRecord
 
 export interface PriceAlert {
   id: number
+  distillery_id?: number
   brewery_id: number
   ingredient_name: string
   alert_type: 'price_drop' | 'back_in_stock' | 'price_increase'
@@ -320,6 +367,7 @@ export interface AIMessage {
 
 export interface AIConversation {
   id: string
+  distillery_id?: string
   brewery_id: string
   title: string
   messages: AIMessage[]
@@ -344,6 +392,7 @@ export interface VoiceCapability {
 // Water Profile
 export interface WaterProfile {
   id: string
+  distillery_id?: string
   brewery_id: string
   name: string
   calcium_ppm: number

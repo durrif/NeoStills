@@ -29,10 +29,13 @@ type SortKey = 'name' | 'quantity' | 'expiry' | 'category' | 'price'
 
 const CATEGORIES = [
   { value: '', label: 'Todos', icon: Package },
-  { value: 'malta_base', label: 'Malta base', icon: Wheat },
-  { value: 'malta_especial', label: 'Malta especial', icon: Wheat },
-  { value: 'lupulo', label: 'Lúpulo', icon: Leaf },
+  { value: 'cereal_base', label: 'Cereal base', icon: Wheat },
+  { value: 'cereal_especial', label: 'Cereal especial', icon: Wheat },
+  { value: 'fruta', label: 'Frutas', icon: Wheat },
+  { value: 'botanico', label: 'Botánicos', icon: Leaf },
   { value: 'levadura', label: 'Levadura', icon: Pill },
+  { value: 'azucar', label: 'Azúcares', icon: Package },
+  { value: 'agua_quimica', label: 'Química de agua', icon: Beaker },
   { value: 'adjunto', label: 'Adjunto', icon: Beaker },
   { value: 'otro', label: 'Otro', icon: Package },
 ] as const
@@ -46,8 +49,9 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 ]
 
 const CATEGORY_ORDER: Record<string, number> = {
-  malta_base: 0, malta_especial: 1, malta_otra: 2,
-  lupulo: 3, levadura: 4, adjunto: 5, otro: 6,
+  cereal_base: 0, cereal_especial: 1, fruta: 2,
+  azucar: 3, botanico: 4, levadura: 5, agua_quimica: 6,
+  adjunto: 7, otro: 8,
 }
 
 /* ── Sort helpers ──────────────────────────────────────────── */
@@ -71,12 +75,13 @@ function sortIngredients(items: Ingredient[], key: SortKey): Ingredient[] {
 
 /* ── Category Icon helper ──────────────────────────────────── */
 const CAT_ICON: Record<string, typeof Package> = {
-  malta_base: Wheat, malta_especial: Wheat, malta_otra: Wheat,
-  lupulo: Leaf, levadura: Pill, adjunto: Beaker, otro: Package,
+  cereal_base: Wheat, cereal_especial: Wheat, fruta: Wheat,
+  azucar: Package, botanico: Leaf, levadura: Pill,
+  agua_quimica: Beaker, adjunto: Beaker, otro: Package,
 }
 
 const MAJOR_ICON: Record<MajorCategory, typeof Package> = {
-  maltas: Wheat, lupulos: Leaf, levaduras: Pill, otros: Package,
+  fermentables: Wheat, botanicos: Leaf, fermentacion: Pill, proceso: Beaker, otros: Package,
 }
 
 /* ── Warehouse Treemap Bar ─────────────────────────────────── */

@@ -48,11 +48,13 @@ export function stockStatus(quantity: number, minStock: number | undefined): 'ok
 
 export function categoryColor(category: IngredientCategory): string {
   const map: Record<IngredientCategory, string> = {
-    malta_base: '#B8860B',
-    malta_especial: '#D4A04A',
-    malta_otra: '#CD853F',
-    lupulo: '#4CAF50',
+    cereal_base: '#C78A2C',
+    cereal_especial: '#9B5D2E',
+    fruta: '#A84A3B',
+    botanico: '#5F8F52',
     levadura: '#FF9800',
+    azucar: '#8A6EAF',
+    agua_quimica: '#3E8FB0',
     adjunto: '#9E9E9E',
     otro: '#607D8B',
   }
@@ -61,11 +63,13 @@ export function categoryColor(category: IngredientCategory): string {
 
 export function categoryIcon(category: IngredientCategory): string {
   const map: Record<IngredientCategory, string> = {
-    malta_base: '🌾',
-    malta_especial: '🍂',
-    malta_otra: '🌰',
-    lupulo: '🌿',
+    cereal_base: '🌾',
+    cereal_especial: '🔥',
+    fruta: '🍎',
+    botanico: '🌿',
     levadura: '🔬',
+    azucar: '🍯',
+    agua_quimica: '🧪',
     adjunto: '🧂',
     otro: '📦',
   }

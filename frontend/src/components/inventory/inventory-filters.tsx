@@ -20,10 +20,13 @@ export interface InventoryFilters {
 
 const CATEGORY_KEYS = [
   { value: "", labelKey: "inventory.categories.all" },
-  { value: "malta_base", labelKey: "inventory.categories.base_malt" },
-  { value: "malta_especial", labelKey: "inventory.categories.specialty_malt" },
-  { value: "lupulo", labelKey: "inventory.categories.hops" },
+  { value: "cereal_base", labelKey: "inventory.categories.cereal_base" },
+  { value: "cereal_especial", labelKey: "inventory.categories.cereal_especial" },
+  { value: "fruta", labelKey: "inventory.categories.fruta" },
+  { value: "botanico", labelKey: "inventory.categories.botanico" },
   { value: "levadura", labelKey: "inventory.categories.yeast" },
+  { value: "azucar", labelKey: "inventory.categories.azucar" },
+  { value: "agua_quimica", labelKey: "inventory.categories.agua_quimica" },
   { value: "adjunto", labelKey: "inventory.categories.adjuncts" },
   { value: "otro", labelKey: "inventory.categories.other" },
 ];

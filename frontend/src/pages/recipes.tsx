@@ -2,8 +2,8 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Plus, Search, Upload, RefreshCw, Grid3x3, List, Filter,
-  SlidersHorizontal, BookOpen, Sparkles, X, FileDown,
+  Plus, Search, Upload, RefreshCw, Grid3x3, List,
+  SlidersHorizontal, BookOpen, X,
   Package, CheckCircle, AlertTriangle, FileArchive,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -21,12 +21,12 @@ import type { Recipe } from '@/lib/types'
 const RecipeCreator = lazy(() => import('@/components/recipes/recipe-creator'))
 
 /* ── Sort options ──────────────────────────────────────────────── */
-type SortKey = 'name' | 'style' | 'abv' | 'ibu' | 'recent'
+type SortKey = 'name' | 'style' | 'abv' | 'volume' | 'recent'
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'name', label: 'Nombre' },
   { key: 'style', label: 'Estilo' },
   { key: 'abv', label: 'ABV' },
-  { key: 'ibu', label: 'IBU' },
+  { key: 'volume', label: 'Volumen' },
   { key: 'recent', label: 'Reciente' },
 ]
 
@@ -36,7 +36,7 @@ function sortRecipes(recipes: Recipe[], key: SortKey): Recipe[] {
     case 'name': return sorted.sort((a, b) => a.name.localeCompare(b.name))
     case 'style': return sorted.sort((a, b) => (a.style ?? '').localeCompare(b.style ?? ''))
     case 'abv': return sorted.sort((a, b) => (b.abv ?? 0) - (a.abv ?? 0))
-    case 'ibu': return sorted.sort((a, b) => (b.ibu ?? 0) - (a.ibu ?? 0))
+    case 'volume': return sorted.sort((a, b) => (b.batch_size_liters ?? 0) - (a.batch_size_liters ?? 0))
     case 'recent': return sorted.reverse()
     default: return sorted
   }
@@ -45,10 +45,10 @@ function sortRecipes(recipes: Recipe[], key: SortKey): Recipe[] {
 /* ── ABV range filter ──────────────────────────────────────────── */
 const ABV_RANGES = [
   { label: 'Todas', min: 0, max: 100 },
-  { label: '< 4%', min: 0, max: 4 },
-  { label: '4-6%', min: 4, max: 6 },
-  { label: '6-8%', min: 6, max: 8 },
-  { label: '> 8%', min: 8, max: 100 },
+  { label: 'Suave', min: 0, max: 10 },
+  { label: 'Media', min: 10, max: 25 },
+  { label: 'Alta', min: 25, max: 45 },
+  { label: 'Potente', min: 45, max: 100 },
 ]
 
 /* ── Main Page ─────────────────────────────────────────────────── */
@@ -118,7 +118,7 @@ export default function RecipesPage() {
     const isZip = file.name.toLowerCase().endsWith('.zip') || file.type.includes('zip')
     const isXml = file.name.toLowerCase().endsWith('.xml')
     if (!isZip && !isXml) {
-      toast.error('Solo archivos BeerXML (.xml) o ZIP (.zip)')
+      toast.error('Solo archivos de recetas .xml o .zip')
       return
     }
     if (isZip) {
@@ -168,8 +168,8 @@ export default function RecipesPage() {
             >
               <div className="border-2 border-dashed border-accent-amber/50 rounded-2xl p-12 text-center">
                 <Upload className="w-12 h-12 text-accent-amber mx-auto mb-3" />
-                <p className="text-lg font-display font-bold text-text-primary">Suelta tu BeerXML aquí</p>
-                <p className="text-sm text-text-secondary mt-1">Archivos .xml o .zip con múltiples recetas</p>
+                <p className="text-lg font-display font-bold text-text-primary">Suelta tu receta aquí</p>
+                <p className="text-sm text-text-secondary mt-1">Archivos .xml o .zip con recetas o plantillas de lote</p>
               </div>
             </motion.div>
           )}
@@ -317,13 +317,13 @@ export default function RecipesPage() {
             <p className="text-sm text-text-secondary mb-4 max-w-sm mx-auto">
               {search
                 ? 'Intenta con otro término de búsqueda'
-                : 'Importa recetas desde BeerXML o crea una nueva con el calculador integrado.'}
+                : 'Importa recetas desde XML/ZIP o crea una nueva plantilla de destilado.'}
             </p>
             {!search && (
               <div className="flex gap-3 justify-center">
                 <Button variant="outline" size="sm" className="border-white/10 text-text-secondary text-xs"
                   onClick={() => fileRef.current?.click()}>
-                  <Upload size={14} className="mr-1" /> Importar BeerXML
+                  <Upload size={14} className="mr-1" /> Importar recetas
                 </Button>
                 <Button size="sm" className="bg-accent-amber text-bg-primary text-xs"
                   onClick={() => { setEditRecipe(null); setCreatorOpen(true) }}>
@@ -369,13 +369,13 @@ export default function RecipesPage() {
                 </div>
                 <div className="flex items-center gap-4 text-xs text-text-tertiary flex-shrink-0">
                   {recipe.abv != null && <span>{recipe.abv.toFixed(1)}%</span>}
-                  {recipe.ibu != null && <span>{Math.round(recipe.ibu)} IBU</span>}
+                  {recipe.og != null && <span>OG {recipe.og.toFixed(3)}</span>}
                   {recipe.batch_size_liters && <span>{recipe.batch_size_liters}L</span>}
                 </div>
                 <Button size="sm" variant="outline"
                   className="border-accent-amber/50 text-accent-amber text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={e => { e.stopPropagation(); handleStartBrew(recipe.id) }}>
-                  Elaborar
+                  Iniciar lote
                 </Button>
               </motion.div>
             ))}
@@ -407,7 +407,7 @@ export default function RecipesPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-display font-bold text-text-primary">
-                    Importación masiva BeerXML
+                    Importación masiva de recetas
                   </h3>
                   <p className="text-xs text-text-secondary">
                     {bulkImport.isPending ? 'Procesando archivos...' : 'Importación completada'}

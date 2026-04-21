@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Send, Plus, Trash2, MessageSquare, Sparkles,
   Package, Beaker, FlaskConical, ShoppingCart, BarChart3,
-  Beer, ChevronLeft, X,
+  Archive, ChevronLeft, X,
 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -31,7 +31,7 @@ const CONTEXT_OPTIONS = [
   { key: 'fermentation', icon: FlaskConical, color: '#42A5F5' },
   { key: 'recipes', icon: Sparkles, color: '#7CB342' },
   { key: 'shop', icon: ShoppingCart, color: '#AB47BC' },
-  { key: 'keezer', icon: Beer, color: '#F5A623' },
+  { key: 'keezer', icon: Archive, color: '#22E6FF' },
 ] as const
 
 // ---- Quick actions per context ----
@@ -415,7 +415,7 @@ export default function AiChatPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={t('ai:placeholder', 'Pregúntame cualquier cosa sobre tu cervecería...')}
+              placeholder={t('ai:placeholder', 'Pregúntame cualquier cosa sobre tu destilería...')}
               rows={1}
               disabled={isStreaming}
               className="flex-1 bg-transparent border-none outline-none text-sm text-[#E8E0D4] resize-none max-h-[120px] overflow-y-auto leading-relaxed placeholder:text-[#5A6B80]"

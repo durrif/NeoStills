@@ -88,7 +88,7 @@ async def create_ingredient(
     distillery: Distillery = Depends(get_current_distillery),
 ):
     ingredient = Ingredient(
-        brewery_id=distillery.id,
+        distillery_id=distillery.id,
         **data.model_dump(),
     )
     db.add(ingredient)

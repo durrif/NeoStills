@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Plus, FlaskConical, Beer, PlayCircle, Thermometer, Droplet,
+  Plus, FlaskConical, PlayCircle, Thermometer, Droplet,
   ChevronRight, Clock, Zap, ListChecks,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -84,16 +84,16 @@ function StartBrewHero() {
     <motion.div
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="relative overflow-hidden rounded-2xl border border-accent-amber/20 bg-gradient-to-br from-accent-amber/5 via-bg-secondary to-bg-primary p-8 md:p-12"
+      className="relative overflow-hidden rounded-2xl border border-accent-cyan/20 bg-[radial-gradient(circle_at_top_right,rgba(34,230,255,0.12),transparent_30%),linear-gradient(135deg,rgba(209,161,120,0.08)_0%,rgba(26,26,46,0.94)_38%,rgba(18,23,42,0.98)_100%)] p-8 md:p-12 shadow-elevated"
     >
       {/* Glow effect */}
-      <div className="absolute -top-20 -right-20 w-60 h-60 bg-accent-amber/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-20 -right-20 w-60 h-60 bg-accent-cyan/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative grid md:grid-cols-2 gap-8 items-center">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <FlaskConical className="h-5 w-5 text-accent-amber" />
-            <span className="text-xs font-semibold text-accent-amber uppercase tracking-wider">
+            <FlaskConical className="h-5 w-5 text-accent-copper" />
+            <span className="text-xs font-semibold text-accent-copper uppercase tracking-[0.24em]">
               {t('brew_day.start_hero_badge')}
             </span>
           </div>
@@ -109,7 +109,7 @@ function StartBrewHero() {
           <select
             value={selectedRecipe ?? ''}
             onChange={(e) => setSelectedRecipe(e.target.value ? Number(e.target.value) : null)}
-            className="w-full px-4 py-3 rounded-xl bg-bg-elevated border border-white/10 text-text-primary text-sm focus:outline-none focus:ring-1 focus:ring-accent-amber/50"
+            className="w-full px-4 py-3 rounded-xl bg-bg-elevated border border-white/10 text-text-primary text-sm focus:outline-none focus:ring-1 focus:ring-accent-cyan/50"
           >
             <option value="">{t('brew_day.no_recipe')}</option>
             {recipes.map((r: Recipe) => (
@@ -120,7 +120,7 @@ function StartBrewHero() {
           <Button
             onClick={handleQuickStart}
             disabled={startBrew.isPending || createSession.isPending}
-            className="w-full bg-accent-amber hover:bg-accent-amber-bright text-bg-primary font-bold py-3 text-base"
+            className="w-full bg-brew-gradient text-[#101522] font-bold py-3 text-base shadow-glow hover:brightness-105"
           >
             <PlayCircle className="h-5 w-5 mr-2" />
             {startBrew.isPending || createSession.isPending ? t('brew_day.starting') : t('brew_day.start_brew')}
@@ -149,7 +149,7 @@ function SessionCard({ session, isActive }: { session: BrewSession; isActive?: b
   return (
     <div className={cn(
       'glass-card rounded-xl border p-5 space-y-4 transition-colors',
-      isActive ? 'border-accent-amber/30 ring-1 ring-accent-amber/10' : 'border-white/10'
+      isActive ? 'border-accent-cyan/30 ring-1 ring-accent-cyan/10' : 'border-white/10'
     )}>
       <div className="flex items-start justify-between gap-2">
         <div>
@@ -161,7 +161,7 @@ function SessionCard({ session, isActive }: { session: BrewSession; isActive?: b
         <span className={cn(
           'px-2 py-0.5 rounded-full text-[10px] font-semibold border',
           isActive
-            ? 'bg-accent-amber/20 text-accent-amber border-accent-amber/30'
+            ? 'bg-accent-copper/15 text-accent-copper border-accent-copper/30'
             : 'bg-bg-elevated text-text-secondary border-white/10'
         )}>
           {session.phase}
@@ -245,8 +245,8 @@ function ActiveBrewPanel({ session }: { session: BrewSession }) {
       {/* Phase title + advance button */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent-amber/15 flex items-center justify-center">
-            <Zap className="h-5 w-5 text-accent-amber" />
+          <div className="w-10 h-10 rounded-xl bg-accent-copper/15 flex items-center justify-center">
+            <Zap className="h-5 w-5 text-accent-copper" />
           </div>
           <div>
             <h2 className="font-display font-bold text-lg text-text-primary">{session.name}</h2>
@@ -261,7 +261,7 @@ function ActiveBrewPanel({ session }: { session: BrewSession }) {
             size="sm"
             onClick={() => handlePhaseAdvance(next as TimelinePhase)}
             disabled={advancePhase.isPending}
-            className="bg-accent-amber/10 text-accent-amber border border-accent-amber/20 hover:bg-accent-amber/20"
+            className="bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/20 hover:bg-accent-cyan/16"
           >
             <ChevronRight size={14} className="mr-1" />
             → {next}
@@ -364,7 +364,7 @@ export default function BrewingPage() {
           <Button
             size="sm"
             onClick={() => setShowNewBatch(true)}
-            className="bg-accent-amber hover:bg-accent-amber-bright text-bg-primary font-semibold"
+            className="bg-brew-gradient text-[#101522] font-semibold shadow-glow hover:brightness-105"
           >
             <Plus className="h-4 w-4 mr-1" />
             {t('brew_day.new_batch')}
@@ -382,7 +382,7 @@ export default function BrewingPage() {
       {/* All sessions grid */}
       <div className="space-y-3">
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider flex items-center gap-2">
-          <Beer className="h-4 w-4" />
+          <FlaskConical className="h-4 w-4 text-accent-cyan" />
           {activeSession ? t('brew_day.other_batches') : t('brew_day.all_batches')} ({historySessions.length})
         </h2>
 
@@ -394,7 +394,9 @@ export default function BrewingPage() {
           </div>
         ) : historySessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <Beer className="h-10 w-10 text-text-muted" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-accent-cyan/20 bg-accent-cyan/5 shadow-glow">
+              <FlaskConical className="h-8 w-8 text-accent-copper" />
+            </div>
             <p className="text-sm text-text-muted">
               {activeSession ? t('brew_day.no_other_batches') : t('brew_day.no_batches_yet')}
             </p>

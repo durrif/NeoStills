@@ -14,10 +14,10 @@ interface Props {
 }
 
 const TYPE_LABELS: Record<WaterProfile['type'], { label: string; icon: typeof Landmark }> = {
-  famous_brewing: { label: 'Aguas cerveceras famosas', icon: Landmark },
+  famous_brewing: { label: 'Aguas de referencia', icon: Landmark },
   city_tap:       { label: 'Agua de grifo — España', icon: MapPin },
   mineral_bottled:{ label: 'Agua mineral embotellada', icon: FlaskConical },
-  style_target:   { label: 'Objetivo por estilo', icon: Droplets },
+  style_target:   { label: 'Objetivo mineral', icon: Droplets },
 }
 
 export function WaterProfileSelector({ label, selectedId, customIons, onSelectProfile, onSetCustom }: Props) {
@@ -47,12 +47,12 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
   const selectedProfile = selectedId ? WATER_PROFILES.find((p) => p.id === selectedId) : null
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-3">{label}</h3>
 
       {/* Selected profile badge */}
       {(selectedProfile || customIons) && (
-        <div className="flex items-center gap-2 mb-3 p-2 rounded-lg bg-accent-amber/10 border border-accent-amber/20">
+        <div className="flex items-center gap-2 mb-3 p-2.5 rounded-xl bg-accent-copper/10 border border-accent-copper/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
           <Droplets size={16} className="text-accent-amber" />
           <span className="text-sm text-text-primary font-medium">
             {selectedProfile
@@ -79,7 +79,7 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
               placeholder="Buscar perfil de agua..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 bg-bg-tertiary border border-white/5 rounded-lg text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-amber/40"
+              className="w-full pl-8 pr-3 py-2.5 bg-bg-tertiary/70 border border-accent-cobalt/16 rounded-xl text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-cobalt/38"
             />
           </div>
 
@@ -95,7 +95,7 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
                 <div key={type}>
                   <button
                     onClick={() => setExpandedType(isExpanded ? null : type)}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium text-text-secondary hover:bg-bg-tertiary transition-colors"
+                    className="w-full flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-text-secondary hover:bg-bg-tertiary/70 hover:border-accent-cobalt/20 border border-transparent transition-colors"
                   >
                     <Icon size={14} />
                     <span>{typeLabel}</span>
@@ -109,7 +109,7 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
                         <button
                           key={p.id}
                           onClick={() => onSelectProfile(p.id)}
-                          className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-bg-tertiary transition-colors group"
+                          className="w-full text-left px-3 py-2.5 rounded-xl text-sm hover:bg-bg-tertiary/70 border border-transparent hover:border-accent-cobalt/16 transition-colors group"
                         >
                           <div className="flex items-center gap-2">
                             <span>{p.countryFlag}</span>
@@ -121,11 +121,9 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
                             <span>Cl: {p.chloride}</span>
                             <span>HCO₃: {p.bicarbonate}</span>
                           </div>
-                          {p.bestFor && (
-                            <div className="text-xs text-accent-amber/60 mt-0.5 group-hover:text-accent-amber transition-colors">
-                              {p.bestFor}
-                            </div>
-                          )}
+                          <div className="text-xs text-accent-copper/75 mt-0.5 group-hover:text-accent-copper transition-colors">
+                            {p.region}
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -138,7 +136,7 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
           {/* Custom input toggle */}
           <button
             onClick={() => setShowCustom(!showCustom)}
-            className="mt-3 w-full text-xs text-accent-info hover:text-accent-info/80 transition-colors text-center py-1"
+            className="mt-3 w-full text-xs text-accent-cobalt hover:text-accent-cobalt/80 transition-colors text-center py-1"
           >
             {showCustom ? 'Ocultar entrada manual' : '✏️ Introducir valores manualmente'}
           </button>
@@ -162,14 +160,14 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
                           [ion]: parseFloat(e.target.value) || 0,
                         }))
                       }
-                      className="w-full px-2 py-1 bg-bg-deep border border-white/5 rounded text-xs text-text-primary text-right focus:outline-none focus:border-accent-amber/40"
+                      className="w-full px-2 py-1.5 bg-bg-deep/80 border border-accent-cobalt/14 rounded-lg text-xs text-text-primary text-right focus:outline-none focus:border-accent-cobalt/34"
                     />
                   </div>
                 ))}
               </div>
               <button
                 onClick={() => onSetCustom(localCustom)}
-                className="w-full py-1.5 bg-accent-amber/20 text-accent-amber text-xs font-medium rounded-lg hover:bg-accent-amber/30 transition-colors"
+                className="w-full py-2 bg-copper-gradient text-bg-deep text-xs font-semibold rounded-xl border border-[#DAB18B33] shadow-copper hover:-translate-y-px transition-all"
               >
                 Usar estos valores
               </button>
@@ -184,7 +182,7 @@ export function WaterProfileSelector({ label, selectedId, customIons, onSelectPr
           {ION_KEYS.map((ion) => {
             const value = selectedProfile ? selectedProfile[ion] : customIons?.[ion] ?? 0
             return (
-              <div key={ion} className="text-center p-1.5 rounded-lg bg-bg-deep/50">
+              <div key={ion} className="text-center p-2 rounded-xl border border-accent-cobalt/12 bg-bg-deep/40">
                 <div className="text-[10px] text-text-tertiary">{ION_LABELS[ion]?.label}</div>
                 <div className="text-sm font-mono font-semibold" style={{ color: ION_LABELS[ion]?.color }}>
                   {Math.round(value * 10) / 10}

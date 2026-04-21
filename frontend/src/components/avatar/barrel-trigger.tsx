@@ -1,11 +1,11 @@
 // frontend/src/components/avatar/barrel-trigger.tsx — NeoStills v4
-// Floating barrel button that opens the unified AI Brewmaster panel
+// Floating cask button that opens the unified Genio Destilador panel
 import { motion } from 'framer-motion'
 import { useAvatarStore } from '@/stores/avatar-store'
 import { useUIStore } from '@/stores/ui-store'
 import { cn } from '@/lib/utils'
 
-/** Barrel SVG icon — a cute beer barrel */
+/** Barrel SVG icon — stylized aging cask */
 function BarrelIcon({ size = 32 }: { size?: number }) {
   return (
     <svg
@@ -28,13 +28,13 @@ function BarrelIcon({ size = 32 }: { size?: number }) {
       <rect x="46" y="28" width="8" height="4" rx="1" fill="#D4723C" />
       <circle cx="56" cy="30" r="3" fill="#F5A623" />
       {/* Magic sparkles */}
-      <circle cx="32" cy="10" r="1.5" fill="#9C6ADE" opacity="0.9">
+      <circle cx="32" cy="10" r="1.5" fill="#22E6FF" opacity="0.9">
         <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite" />
       </circle>
-      <circle cx="24" cy="8" r="1" fill="#F5A623" opacity="0.7">
+      <circle cx="24" cy="8" r="1" fill="#D1A178" opacity="0.7">
         <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.5s" repeatCount="indefinite" />
       </circle>
-      <circle cx="40" cy="9" r="1" fill="#9C6ADE" opacity="0.8">
+      <circle cx="40" cy="9" r="1" fill="#22E6FF" opacity="0.8">
         <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.8s" repeatCount="indefinite" />
       </circle>
     </svg>
@@ -79,11 +79,11 @@ export function BarrelTrigger() {
       )}
       style={{
         filter: isActive
-          ? 'drop-shadow(0 0 20px rgba(156, 106, 222, 0.6))'
-          : 'drop-shadow(0 0 12px rgba(245, 166, 35, 0.3))',
+          ? 'drop-shadow(0 0 22px rgba(34, 230, 255, 0.45))'
+          : 'drop-shadow(0 0 14px rgba(184, 115, 51, 0.35))',
       }}
-      aria-label={!isConfigured ? 'Configurar AI Brewmaster' : isActive ? 'Cerrar AI Brewmaster' : 'Abrir AI Brewmaster'}
-      title={!isConfigured ? '🧞 Configura tu Genio Cervecero' : isActive ? 'Cerrar AI Brewmaster' : 'Abrir AI Brewmaster'}
+      aria-label={!isConfigured ? 'Configurar Genio Destilador' : isActive ? 'Cerrar Genio Destilador' : 'Abrir Genio Destilador'}
+      title={!isConfigured ? '🧞 Configura tu Genio Destilador' : isActive ? 'Cerrar Genio Destilador' : 'Abrir Genio Destilador'}
     >
       <BarrelIcon size={isActive ? 36 : 32} />
 
@@ -92,7 +92,7 @@ export function BarrelTrigger() {
         <motion.span
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-accent-purple flex items-center justify-center text-[10px] font-bold text-white shadow-lg"
+          className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-accent-cyan flex items-center justify-center text-[10px] font-bold text-bg-primary shadow-lg"
         >
           ?
         </motion.span>
@@ -105,7 +105,7 @@ export function BarrelTrigger() {
           transition={{ duration: 2.5, repeat: Infinity }}
           className="absolute inset-0 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(245, 166, 35, 0.25) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(184, 115, 51, 0.25) 0%, transparent 70%)',
           }}
         />
       )}
@@ -117,7 +117,7 @@ export function BarrelTrigger() {
           transition={{ duration: 1.5, repeat: Infinity }}
           className="absolute inset-0 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(156, 106, 222, 0.3) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(34, 230, 255, 0.28) 0%, transparent 70%)',
           }}
         />
       )}

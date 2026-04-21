@@ -16,7 +16,7 @@ export function AcidCalculator() {
   const needsAcid = estimatedPH > targetPH + 0.05
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-1">
         Adición de ácido
       </h3>
@@ -33,7 +33,7 @@ export function AcidCalculator() {
             className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${
               selectedAcidId === acid.id
                 ? 'bg-accent-amber/15 border border-accent-amber/30 text-text-primary'
-                : 'bg-bg-deep/50 border border-transparent text-text-secondary hover:bg-bg-tertiary'
+                : 'bg-bg-deep/50 border border-accent-cobalt/10 text-text-secondary hover:bg-bg-tertiary/70'
             }`}
           >
             <div className="font-medium">{acid.name}</div>
@@ -45,7 +45,7 @@ export function AcidCalculator() {
       </div>
 
       {/* Result */}
-      <div className="bg-bg-deep/50 rounded-lg p-3">
+      <div className="bg-bg-deep/45 rounded-2xl border border-accent-cobalt/12 p-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-text-secondary">pH actual → objetivo</span>
           <span className="text-xs font-mono text-text-primary">
@@ -66,15 +66,15 @@ export function AcidCalculator() {
             </div>
           </>
         ) : (
-          <div className="text-[10px] text-status-success bg-status-success/10 p-2 rounded-lg">
-            ✅ No se necesita ácido. El pH está en el rango objetivo.
+          <div className="text-[10px] text-status-success bg-status-success/10 p-2 rounded-xl">
+            No se necesita ácido. El pH ya está dentro del rango objetivo.
           </div>
         )}
       </div>
 
       {/* Tip */}
-      <div className="mt-3 text-[10px] text-text-tertiary bg-bg-deep/30 rounded-lg p-2">
-        💡 <strong>Consejo:</strong> Añade el ácido poco a poco y mide el pH real con un medidor digital.
+      <div className="mt-3 text-[10px] text-text-tertiary bg-bg-deep/30 rounded-xl border border-accent-cobalt/10 p-2">
+        <strong>Consejo:</strong> Añade el ácido poco a poco y mide el pH real con un medidor digital.
         Estos cálculos son estimaciones — siempre verifica antes de ajustar más.
       </div>
     </div>

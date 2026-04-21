@@ -1,5 +1,5 @@
 {
-  "subtitle": "Rendimiento, costes y tendencias de tu cervecería",
+  "subtitle": "Rendimiento, costes y tendencias de tu destilería",
   "last_6m": "Últimos 6 meses",
   "last_12m": "Último año",
   "all_time": "Todo",
@@ -11,7 +11,7 @@
   "ingredient_usage": "Uso de ingredientes (kg)",
   "fermentation_comparison": "Rendimiento de fermentación",
   "seasonal_patterns": "Patrón estacional (litros/mes)",
-  "brewery_score": "Perfil de tu cervecería",
+  "brewery_score": "Perfil de tu destilería",
   "overall_score": "Puntuación general",
   "kpi": {
     "batches": "Lotes totales",

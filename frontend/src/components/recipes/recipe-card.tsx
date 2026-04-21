@@ -1,6 +1,6 @@
 // src/components/recipes/recipe-card.tsx — NeoStills v3
 import { motion } from 'framer-motion'
-import { Beaker, Droplets, Zap, Wheat, Leaf, Edit3, PlayCircle } from 'lucide-react'
+import { Droplets, Wheat, Leaf, Edit3, PlayCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CanBrewBadge } from './can-brew-badge'
@@ -32,6 +32,22 @@ function srmToHex(srm: number): string {
 }
 
 export function RecipeCard({ recipe, index = 0, onEdit, onBrew }: RecipeCardProps) {
+  const totalIngredients =
+    (recipe.fermentables?.length ?? 0) +
+    (recipe.hops?.length ?? 0) +
+    (recipe.yeasts?.length ?? 0) +
+    (recipe.adjuncts?.length ?? 0)
+
+  const statItems = [
+    recipe.abv != null ? { label: 'ABV', value: `${recipe.abv.toFixed(1)}%` } : null,
+    recipe.og != null ? { label: 'OG', value: recipe.og.toFixed(3) } : null,
+    recipe.batch_size_liters
+      ? { label: 'Volumen', value: `${recipe.batch_size_liters}L` }
+      : totalIngredients > 0
+        ? { label: 'Insumos', value: `${totalIngredients}` }
+        : null,
+  ].filter(Boolean) as Array<{ label: string; value: string }>
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -66,26 +82,13 @@ export function RecipeCard({ recipe, index = 0, onEdit, onBrew }: RecipeCardProp
           </div>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-3 gap-2">
-            {recipe.abv != null && (
-              <div className="text-center">
-                <p className="font-mono text-sm font-bold text-text-primary">{recipe.abv.toFixed(1)}%</p>
-                <p className="text-[10px] text-text-tertiary">ABV</p>
+          <div className={cn('grid gap-2', statItems.length > 2 ? 'grid-cols-3' : 'grid-cols-2')}>
+            {statItems.map((item) => (
+              <div key={item.label} className="text-center">
+                <p className="font-mono text-sm font-bold text-text-primary">{item.value}</p>
+                <p className="text-[10px] text-text-tertiary">{item.label}</p>
               </div>
-            )}
-            {recipe.ibu != null && (
-              <div className="text-center">
-                <p className="font-mono text-sm font-bold text-text-primary">{Math.round(recipe.ibu)}</p>
-                <p className="text-[10px] text-text-tertiary">IBU</p>
-              </div>
-            )}
-            {recipe.srm != null && (
-              <div className="text-center flex flex-col items-center">
-                <div className="w-4 h-4 rounded-full border border-white/10 mb-0.5"
-                  style={{ background: srmToHex(recipe.srm) }} />
-                <p className="text-[10px] text-text-tertiary">{recipe.srm.toFixed(0)} SRM</p>
-              </div>
-            )}
+            ))}
           </div>
 
           {/* Ingredients summary */}
@@ -120,7 +123,7 @@ export function RecipeCard({ recipe, index = 0, onEdit, onBrew }: RecipeCardProp
             <Button size="sm"
               className="flex-1 bg-accent-amber text-bg-primary text-[10px] h-7"
               onClick={e => { e.stopPropagation(); onBrew?.() }}>
-              <PlayCircle size={10} className="mr-1" /> Elaborar
+              <PlayCircle size={10} className="mr-1" /> Iniciar lote
             </Button>
           </div>
         </div>

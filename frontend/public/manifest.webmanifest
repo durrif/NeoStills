@@ -1,7 +1,7 @@
 {
-  "name": "NeoStills — Control de Cervecería",
+  "name": "NeoStills — Control de Destilería",
   "short_name": "NeoStills",
-  "description": "Sistema de control de cervecería artesanal",
+  "description": "Sistema de control para destilacion artesanal y grain-to-glass",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A0A0B",
@@ -83,8 +83,8 @@
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Elaboración activa",
-      "short_name": "Elaborar",
+      "name": "Destilación activa",
+      "short_name": "Destilar",
       "url": "/brewing",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
     }

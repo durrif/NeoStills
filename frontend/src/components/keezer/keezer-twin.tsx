@@ -254,7 +254,7 @@ export default function KeezerTwin({ taps, selectedTap, onSelectTap, keezerTemp 
           {/* Tap number label below */}
           <text x="30" y="157" textAnchor="middle" fill="#5A6B80"
             fontSize="8" fontFamily="Inter, sans-serif">
-            TAP {tap.id}
+            LINEA {tap.id}
           </text>
           {/* Beer name below */}
           <text x="30" y="170" textAnchor="middle" fill="#E8E0D4"

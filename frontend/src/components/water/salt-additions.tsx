@@ -2,7 +2,7 @@
 
 import { BREWING_SALTS, ION_KEYS, ION_LABELS } from '@/data/water-profiles'
 import { useWaterStore } from '@/stores/water-store'
-import { calcAdjustedWater, calcIonDelta, type IonConcentrations } from '@/lib/water-calc'
+import { calcIonDelta } from '@/lib/water-calc'
 import { Sparkles, RotateCcw } from 'lucide-react'
 
 export function SaltAdditions() {
@@ -21,14 +21,14 @@ export function SaltAdditions() {
   const hasTarget = ION_KEYS.some((ion) => target[ion] > 0)
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-text-primary">Adición de sales</h3>
         <div className="flex gap-2">
           {hasTarget && (
             <button
               onClick={autoSuggestSalts}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-accent-purple/20 text-accent-purple text-xs font-medium rounded-lg hover:bg-accent-purple/30 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-copper-gradient text-bg-deep text-xs font-semibold rounded-xl border border-[#DAB18B33] shadow-copper hover:-translate-y-px transition-all"
             >
               <Sparkles size={12} />
               Auto-ajustar
@@ -76,7 +76,7 @@ export function SaltAdditions() {
                     value={grams || ''}
                     onChange={(e) => setSaltAmount(salt.id, parseFloat(e.target.value) || 0)}
                     placeholder="0"
-                    className="w-20 px-2 py-1.5 bg-bg-deep border border-white/5 rounded-lg text-xs text-text-primary text-right font-mono focus:outline-none focus:border-accent-amber/40 transition-colors"
+                    className="w-20 px-2 py-1.5 bg-bg-deep/80 border border-accent-cobalt/14 rounded-xl text-xs text-text-primary text-right font-mono focus:outline-none focus:border-accent-cobalt/34 transition-colors"
                   />
                   <span className="text-[10px] text-text-tertiary w-4">g</span>
                 </div>
@@ -88,7 +88,7 @@ export function SaltAdditions() {
 
       {/* Ion delta display */}
       {hasTarget && (
-        <div className="mt-4 pt-3 border-t border-white/5">
+        <div className="mt-4 pt-3 border-t border-accent-cobalt/10">
           <div className="text-[10px] text-text-tertiary mb-2 font-medium uppercase tracking-wider">
             Delta vs objetivo
           </div>
@@ -103,7 +103,7 @@ export function SaltAdditions() {
               return (
                 <div
                   key={ion}
-                  className={`text-center p-1.5 rounded-lg border transition-colors ${
+                  className={`text-center p-1.5 rounded-xl border transition-colors ${
                     isGood
                       ? 'bg-status-success/5 border-status-success/20'
                       : isOver

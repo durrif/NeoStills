@@ -89,15 +89,15 @@ export default function BrewCoach() {
           </div>
           <div>
             <h3 className="text-sm font-semibold text-text-primary">
-              Brew Coach Mode
+              Modo Coach de Proceso
             </h3>
             <p className="text-xs text-text-secondary">
-              Timer gigante, alertas de lúpulo, cámara PiP y voz
+              Temporizador grande, hitos de proceso, cámara PiP y voz
             </p>
           </div>
         </div>
         <p className="text-xs text-text-tertiary mb-3">
-          Modo diseñado para usar con manos libres durante la elaboración. 
+          Modo diseñado para usar con manos libres durante el proceso. 
           Selecciona la fase para empezar:
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -194,7 +194,7 @@ export default function BrewCoach() {
         {(activeCoachPhase === 'boil') && (
           <div className="mt-4 pt-4 border-t border-white/[0.07]">
             <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider mb-2">
-              Próximas adiciones
+              Próximos hitos
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               {DEMO_HOP_SCHEDULE.filter((h) => h.time <= timerSeconds).map((hop) => (
@@ -256,7 +256,7 @@ export default function BrewCoach() {
             <div className="aspect-video bg-bg-deep flex items-center justify-center relative">
               <Camera size={24} className="text-text-tertiary animate-pulse" />
               <p className="absolute bottom-2 left-3 text-[10px] text-text-tertiary">
-                Cámara PiP — BeerGate HW / Móvil
+                Cámara PiP — NeoStills HW / móvil
               </p>
               <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/20">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />

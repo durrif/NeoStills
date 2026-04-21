@@ -83,12 +83,12 @@ export function WaterComparisonChart() {
   }
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-text-primary">
           Comparación de perfiles
         </h3>
-        <div className="flex bg-bg-deep rounded-lg p-0.5">
+        <div className="flex bg-bg-deep/70 border border-accent-cobalt/12 rounded-xl p-0.5">
           <button
             onClick={() => setMode('bar')}
             className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
@@ -141,7 +141,7 @@ export function WaterComparisonChart() {
               <Bar
                 dataKey="source"
                 name={sourceName}
-                fill="#F5A623"
+                fill="#5F7EA6"
                 opacity={0.35}
                 radius={[2, 2, 0, 0]}
               />
@@ -150,7 +150,7 @@ export function WaterComparisonChart() {
               <Bar
                 dataKey="diluted"
                 name="Diluido"
-                fill="#42A5F5"
+                fill="#8794B0"
                 opacity={0.35}
                 radius={[2, 2, 0, 0]}
               />
@@ -158,7 +158,7 @@ export function WaterComparisonChart() {
             <Bar
               dataKey="adjusted"
               name="Ajustado"
-              fill="#7CB342"
+              fill="#B87333"
               opacity={0.85}
               radius={[2, 2, 0, 0]}
             />
@@ -166,7 +166,7 @@ export function WaterComparisonChart() {
               <Bar
                 dataKey="target"
                 name={targetName}
-                fill="#9C6ADE"
+                fill="#D1A178"
                 opacity={0.6}
                 radius={[2, 2, 0, 0]}
               />
@@ -192,24 +192,24 @@ export function WaterComparisonChart() {
               <Radar
                 name={sourceName}
                 dataKey="source"
-                stroke="#F5A623"
-                fill="#F5A623"
+                stroke="#5F7EA6"
+                fill="#5F7EA6"
                 fillOpacity={0.15}
               />
             )}
             <Radar
               name="Ajustado"
               dataKey="adjusted"
-              stroke="#7CB342"
-              fill="#7CB342"
+              stroke="#B87333"
+              fill="#B87333"
               fillOpacity={0.25}
             />
             {hasTarget && (
               <Radar
                 name={targetName}
                 dataKey="target"
-                stroke="#9C6ADE"
-                fill="#9C6ADE"
+                stroke="#D1A178"
+                fill="#D1A178"
                 fillOpacity={0.15}
               />
             )}

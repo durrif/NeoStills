@@ -1,6 +1,6 @@
 # docker-compose.production.yml — NeoStills v2 Production
 # Deploys on CT 102 alongside the legacy neostills on CT 101
-# External nginx (on CT 100 or host) proxies neostills.es → port 8080 (frontend)
+# External nginx (on CT 100 or host) proxies neostills.com → port 8080 (frontend)
 #
 # Usage:
 #   cp .env.production .env

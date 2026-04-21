@@ -1,5 +1,5 @@
 // frontend/src/components/avatar/genie-avatar.tsx — NeoStills v4 FASE 1
-// The main AI avatar ("El Genio Cervecero") with chroma-key video, speech bubble, and genie effects
+// The main AI avatar ("El Genio Destilador") with chroma-key video, speech bubble, and genie effects
 import { useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Volume2, VolumeX, Sparkles } from 'lucide-react'
@@ -149,7 +149,7 @@ export function GenieAvatar() {
               ) : config.imageUrl ? (
                 <img
                   src={config.imageUrl}
-                  alt="AI Brewmaster Avatar"
+                  alt="Avatar del Genio Destilador"
                   loading="lazy"
                   className="w-full h-full object-cover"
                 />
@@ -209,7 +209,7 @@ export function GenieAvatar() {
               <div className="flex-1" />
 
               <span className="text-[10px] text-text-tertiary font-mono tracking-wide uppercase">
-                {phase === 'summoning' ? '✨ Invocando...' : 'El Genio Cervecero'}
+                {phase === 'summoning' ? '✨ Invocando...' : 'El Genio Destilador'}
               </span>
             </div>
           </div>

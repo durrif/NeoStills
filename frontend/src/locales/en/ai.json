@@ -1,40 +1,40 @@
 {
-  "assistant_name": "Brewmaster",
-  "welcome": "Hi! I'm Brewmaster, your brewing assistant. How can I help you today?",
+  "assistant_name": "Master Distiller",
+  "welcome": "Hello. I'm the NeoStills Master Distiller. I can help with recipes, cuts, fermentation, inventory and barrel programs.",
   "new_chat": "New",
   "chat_history": "History",
   "no_conversations": "No conversations yet",
-  "placeholder": "Ask me anything about your brewery...",
+  "placeholder": "Ask me anything about your distillery...",
   "context": {
-    "inventory": "Context: Inventory", "brewing": "Context: Active brew",
+    "inventory": "Context: Inventory", "brewing": "Context: Active distillation",
     "fermentation": "Context: Fermentation", "recipes": "Context: Recipes",
     "shop": "Context: Shop", "dashboard": "Context: Dashboard"
   },
   "quick_actions": {
     "inventory": [
-      "What can I brew with what I have?",
-      "Which ingredients are expiring soon?",
-      "What are my lowest stock levels?"
+      "What spirit can I produce with what I have?",
+      "Which ingredients or botanicals should I use first?",
+      "Which raw materials are below minimum stock?"
     ],
     "brewing": [
-      "How long until this step is done?",
+      "Which cut should I monitor now?",
       "What's the correct mash temperature?",
-      "Move to the next step"
+      "Prepare the next batch step"
     ],
     "fermentation": [
       "How is fermentation going?",
       "Analyze the gravity curve",
-      "When will it be ready to package?"
+      "When will it be ready to distill?"
     ],
     "shop": [
-      "Find the best price for Pale Ale malt",
-      "Where can I buy Citra hops cheapest?",
+      "Find the best price for malted barley",
+      "Where can I source gin botanicals cheapest?",
       "Calculate the cost of my next recipe"
     ],
     "default": [
       "Recommend a recipe with my inventory",
-      "What's my brewery status?",
-      "Help me plan my next brew"
+      "What's my distillery status?",
+      "Help me plan my next batch"
     ]
   },
   "errors": {

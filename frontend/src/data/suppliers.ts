@@ -1,4 +1,4 @@
-// src/data/suppliers.ts — European homebrew supplier database (NeoStills v4)
+// src/data/suppliers.ts — European distilling supplier database (NeoStills v4)
 
 export type SupplierCountry = 'ES' | 'UK' | 'BE' | 'DE' | 'FR' | 'NL' | 'IT' | 'IE' | 'PL' | 'SE'
 
@@ -32,7 +32,7 @@ export const SUPPLIER_DATABASE: SupplierInfo[] = [
   // ── Spanish Suppliers ──
   {
     id: 'latiendadelcervecero',
-    name: 'La Tienda del Cervecero',
+    name: 'La Tienda del Destilador',
     country: 'ES',
     url: 'https://www.latiendadelcervecero.com',
     freeShippingThreshold: 60,

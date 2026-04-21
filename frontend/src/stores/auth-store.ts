@@ -2,7 +2,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { api } from '@/lib/api'
-import type { User, Brewery, TokenResponse } from '@/lib/types'
+import type { User, Brewery, OnboardingStatus, TokenResponse } from '@/lib/types'
 
 interface AuthState {
   user: User | null
@@ -10,9 +10,12 @@ interface AuthState {
   accessToken: string | null
   refreshToken: string | null
   isAuthenticated: boolean
+  onboardingStatus: OnboardingStatus | null
+  onboardingLoaded: boolean
 
   setAuth: (data: TokenResponse) => void
   setBrewery: (brewery: Brewery) => void
+  setOnboardingStatus: (status: OnboardingStatus | null) => void
   updateUser: (user: Partial<User>) => void
   logout: () => void
 }
@@ -25,6 +28,8 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
+      onboardingStatus: null,
+      onboardingLoaded: false,
 
       setAuth: (data) => {
         api.setToken(data.access_token)
@@ -36,10 +41,15 @@ export const useAuthStore = create<AuthState>()(
           accessToken: data.access_token,
           refreshToken: data.refresh_token,
           isAuthenticated: true,
+          onboardingStatus: null,
+          onboardingLoaded: false,
         })
       },
 
       setBrewery: (brewery) => set({ brewery }),
+
+      setOnboardingStatus: (status) =>
+        set({ onboardingStatus: status, onboardingLoaded: true }),
 
       updateUser: (updates) =>
         set((state) => ({
@@ -56,6 +66,8 @@ export const useAuthStore = create<AuthState>()(
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
+          onboardingStatus: null,
+          onboardingLoaded: false,
         })
       },
     }),
@@ -67,6 +79,8 @@ export const useAuthStore = create<AuthState>()(
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
+        onboardingStatus: state.onboardingStatus,
+        onboardingLoaded: state.onboardingLoaded,
       }),
       onRehydrateStorage: () => (state) => {
         // Restore token in API client after page refresh

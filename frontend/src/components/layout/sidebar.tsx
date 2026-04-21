@@ -5,12 +5,13 @@ import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, Beaker, FlaskConical, BookOpen,
   Package, ShoppingCart, FileText, Settings,
-  ChevronLeft, ChevronRight, Cpu, Beer, BarChart3, Bot,
+  ChevronLeft, ChevronRight, Cpu, Archive, BarChart3, Bot,
   Droplets, Users, GraduationCap, Sparkles,
 } from 'lucide-react'
 import { useUIStore } from '@/stores/ui-store'
 import { useAuthStore } from '@/stores/auth-store'
 import { useAvatarStore } from '@/stores/avatar-store'
+import { Logo } from '@/components/ui/logo'
 import { cn } from '@/lib/utils'
 
 interface NavItem {
@@ -21,18 +22,21 @@ interface NavItem {
 
 interface NavGroup {
   labelKey: string | null
+  tone: 'steel' | 'copper' | 'cobalt' | 'cyan'
   items: NavItem[]
 }
 
 const navGroups: NavGroup[] = [
   {
     labelKey: null,
+    tone: 'steel',
     items: [
       { to: '/', icon: LayoutDashboard, labelKey: 'nav.overview' },
     ],
   },
   {
     labelKey: 'nav.group_brew',
+    tone: 'copper',
     items: [
       { to: '/brewing', icon: Beaker, labelKey: 'nav.brew_day' },
       { to: '/fermentation', icon: FlaskConical, labelKey: 'nav.fermentation' },
@@ -42,6 +46,7 @@ const navGroups: NavGroup[] = [
   },
   {
     labelKey: 'nav.group_ops',
+    tone: 'steel',
     items: [
       { to: '/inventory', icon: Package, labelKey: 'nav.inventory' },
       { to: '/procurement', icon: ShoppingCart, labelKey: 'nav.procurement' },
@@ -51,13 +56,15 @@ const navGroups: NavGroup[] = [
   },
   {
     labelKey: 'nav.group_gear',
+    tone: 'cyan',
     items: [
       { to: '/devices', icon: Cpu, labelKey: 'nav.devices' },
-      { to: '/keezer', icon: Beer, labelKey: 'nav.keezer' },
+      { to: '/keezer', icon: Archive, labelKey: 'nav.keezer' },
     ],
   },
   {
     labelKey: 'nav.group_insights',
+    tone: 'cobalt',
     items: [
       { to: '/analytics', icon: BarChart3, labelKey: 'nav.analytics' },
       { to: '/ai-chat', icon: Bot, labelKey: 'nav.ai_assistant' },
@@ -88,7 +95,14 @@ export function Sidebar() {
     }
   }
 
-  const renderItem = ({ to, icon: Icon, labelKey }: NavItem) => {
+  const toneAccent: Record<NavGroup['tone'], string> = {
+    steel: 'var(--accent-steel)',
+    copper: 'var(--accent-copper)',
+    cobalt: 'var(--accent-cobalt)',
+    cyan: 'var(--accent-cyan)',
+  }
+
+  const renderItem = ({ to, icon: Icon, labelKey }: NavItem, accent: string) => {
     const active = to !== '#ai' && isActive(to)
     const content = (
       <div
@@ -101,7 +115,9 @@ export function Sidebar() {
         aria-current={active ? 'page' : undefined}
         onClick={() => handleClick(to)}
       >
-        <Icon size={18} className="shrink-0 sidebar-icon" />
+        <span className="sidebar-icon-wrap" style={{ ['--icon-accent' as any]: accent }}>
+          <Icon size={18} className="shrink-0 sidebar-icon" />
+        </span>
         <AnimatePresence>
           {!sidebarCollapsed && (
             <motion.span
@@ -132,12 +148,18 @@ export function Sidebar() {
     <motion.aside
       animate={{ width: sidebarCollapsed ? 60 : 240 }}
       transition={{ duration: 0.2, ease: 'easeInOut' }}
-      className="hidden md:flex flex-col h-full bg-bg-secondary border-r border-white/[0.06] overflow-hidden shrink-0"
+      className="hidden md:flex flex-col h-full border-r border-accent-cobalt/16 overflow-hidden shrink-0"
+      style={{
+        backgroundImage: "linear-gradient(180deg, rgba(14,18,34,0.98) 0%, rgba(8,11,20,0.98) 100%), url('/still-schematic-v1.svg')",
+        backgroundRepeat: 'no-repeat, no-repeat',
+        backgroundPosition: '0 0, right -240px bottom -120px',
+        backgroundSize: 'auto, 620px',
+      }}
       role="navigation"
       aria-label={t('nav.main_navigation', 'Main navigation')}
     >
       {/* Logo */}
-      <div className="flex items-center h-14 px-4 border-b border-white/[0.06]">
+      <div className="flex items-center h-16 px-4 border-b border-accent-cobalt/16 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_100%)]">
         <AnimatePresence mode="wait">
           {!sidebarCollapsed ? (
             <motion.div
@@ -145,14 +167,13 @@ export function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-2.5 overflow-hidden"
+              className="overflow-hidden"
             >
-              <img src="/logo-icon.svg" alt="NeoStills" className="w-7 h-7 shrink-0" />
-              <span className="font-display font-semibold text-base amber-text whitespace-nowrap">NeoStills</span>
+              <Logo size="md" showTagline className="overflow-hidden" />
             </motion.div>
           ) : (
             <motion.div key="icon" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mx-auto">
-              <img src="/logo-icon.svg" alt="NeoStills" className="w-6 h-6" />
+              <Logo size="sm" showText={false} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -163,13 +184,13 @@ export function Sidebar() {
         {navGroups.map((group, gi) => (
           <div key={gi}>
             {group.labelKey && !sidebarCollapsed && (
-              <div className="nav-section-label">{t(group.labelKey)}</div>
+              <div className="nav-section-label" style={{ ['--section-accent' as any]: toneAccent[group.tone] }}>{t(group.labelKey)}</div>
             )}
             {group.labelKey && sidebarCollapsed && (
               <div className="h-px bg-white/[0.04] mx-2 my-3" />
             )}
             <div className="space-y-0.5">
-              {group.items.map(renderItem)}
+              {group.items.map((item) => renderItem(item, toneAccent[group.tone]))}
             </div>
           </div>
         ))}
@@ -183,7 +204,7 @@ export function Sidebar() {
               <img src={avatarConfig.imageUrl} alt="Avatar" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-medium text-text-primary truncate">El Genio</p>
+              <p className="text-[11px] font-medium text-text-primary truncate">{t('nav.avatar_config')}</p>
               <p className="text-[9px] text-accent-purple flex items-center gap-1">
                 <Sparkles size={8} />
                 Activo
@@ -193,7 +214,7 @@ export function Sidebar() {
         </Link>
       )}
       {avatarConfig.enabled && sidebarCollapsed && (
-        <Link to="/avatar-config" className="flex justify-center mb-2" title="El Genio Cervecero">
+        <Link to="/avatar-config" className="flex justify-center mb-2" title={t('nav.avatar_config')}>
           <div className="w-8 h-8 rounded-full overflow-hidden border border-accent-purple/30 ring-2 ring-accent-purple/10">
             {avatarConfig.imageUrl ? (
               <img src={avatarConfig.imageUrl} alt="Avatar" className="w-full h-full object-cover" />
@@ -209,7 +230,7 @@ export function Sidebar() {
       {/* Bottom: settings + user avatar */}
       <div className="border-t border-white/[0.06]">
         <div className="px-2 py-2 space-y-0.5">
-          {bottomNav.map(renderItem)}
+          {bottomNav.map((item) => renderItem(item, toneAccent.steel))}
         </div>
 
         {/* User avatar */}
@@ -232,9 +253,12 @@ export function Sidebar() {
           <button
             onClick={toggleSidebar}
             className="sidebar-item w-full justify-center"
+            style={{ ['--icon-accent' as any]: toneAccent.steel }}
             aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            <span className="sidebar-icon-wrap">
+              {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            </span>
           </button>
         </div>
       </div>

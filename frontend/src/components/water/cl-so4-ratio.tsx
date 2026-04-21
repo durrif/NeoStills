@@ -15,12 +15,12 @@ export function ClSO4Ratio() {
   const position = (Math.log10(clampedRatio) + 1) / 2 * 100 // maps 0.1→0%, 1→50%, 10→100%
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-1">
         Ratio Cl⁻/SO₄²⁻
       </h3>
       <p className="text-[10px] text-text-tertiary mb-4">
-        Determina el balance entre cuerpo maltoso y sequedad lupulada
+        Determina el equilibrio entre redondez mineral y perfil seco en el macerado
       </p>
 
       {/* Visual slider */}
@@ -28,7 +28,7 @@ export function ClSO4Ratio() {
         {/* Gradient bar */}
         <div className="h-3 rounded-full overflow-hidden"
           style={{
-            background: 'linear-gradient(to right, #7CB342 0%, #9CCC65 25%, #F5A623 50%, #D4723C 75%, #EF5350 100%)',
+            background: 'linear-gradient(to right, #466690 0%, #5C7FAE 24%, #D1A178 52%, #B87333 76%, #7D4A22 100%)',
           }}
         />
 
@@ -44,9 +44,9 @@ export function ClSO4Ratio() {
 
         {/* Labels below bar */}
         <div className="flex justify-between mt-2 text-[9px] text-text-tertiary">
-          <span>Lupulado</span>
-          <span>Equilibrado</span>
-          <span>Maltoso</span>
+          <span>Seco</span>
+          <span>Balance</span>
+          <span>Redondo</span>
         </div>
       </div>
 
@@ -68,11 +68,11 @@ export function ClSO4Ratio() {
 
       {/* Recommendation */}
       <div className="mt-3 pt-3 border-t border-white/5 text-[10px] text-text-tertiary">
-        {balance === 'very-hoppy' && '🍺 Perfecto para IPA, West Coast, Double IPA — sequedad y amargor pronunciados.'}
-        {balance === 'hoppy' && '🍺 Bueno para Pale Ale, APA, hoppy Amber — lúpulo presente pero equilibrado.'}
-        {balance === 'balanced' && '🍺 Equilibrado — adecuado para la mayoría de estilos. Kölsch, Helles, Lager.'}
-        {balance === 'malty' && '🍺 Bueno para Amber, Scottish, Bock — cuerpo redondo y maltoso.'}
-        {balance === 'very-malty' && '🍺 Muy maltoso — Stout, Porter, Barleywine — cuerpo muy lleno.'}
+        {balance === 'very-hoppy' && 'Perfil seco y nítido, útil para bases neutras, vodka o botánicos muy definidos.'}
+        {balance === 'hoppy' && 'Perfil firme y ligero, adecuado para washes limpios y destilados de corte más seco.'}
+        {balance === 'balanced' && 'Equilibrado — adecuado para la mayoría de maceraciones y fermentaciones de cereal.'}
+        {balance === 'malty' && 'Perfil redondo, interesante para whiskey de cereal y destilados con más cuerpo.'}
+        {balance === 'very-malty' && 'Muy redondo y estructurado — mejor para recetas donde buscas textura y profundidad.'}
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, Wifi, Beaker, BarChart3, Cpu } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
+import { Logo } from '@/components/ui/logo'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import type { TokenResponse } from '@/lib/types'
@@ -65,10 +66,7 @@ export default function LoginPage() {
       {/* Left panel — Branding (hidden on mobile) */}
       <div className="hidden lg:flex flex-col justify-between w-[480px] p-10 relative z-10">
         <div>
-          <div className="flex items-center gap-3 mb-16">
-            <img src="/favicon.svg" alt="NeoStills" className="w-10 h-10 drop-shadow-[0_0_16px_rgba(212,160,74,0.3)]" />
-            <span className="text-xl font-bold amber-text">NeoStills</span>
-          </div>
+          <Logo size="lg" showTagline className="mb-16 drop-shadow-[0_0_16px_rgba(34,230,255,0.18)]" />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -76,7 +74,7 @@ export default function LoginPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <h2 className="text-3xl font-bold text-text-primary leading-tight mb-3">
-              {t('auth.hero_title', 'Tu cervecería, conectada.')}
+              {t('auth.hero_title', 'Tu destilería, conectada.')}
             </h2>
             <p className="text-base text-text-secondary leading-relaxed max-w-sm">
               {t('auth.hero_subtitle', 'Controla cada etapa de elaboración, gestiona inventario y dispositivos desde un solo lugar.')}
@@ -103,7 +101,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-xs text-text-tertiary">
-          &copy; {new Date().getFullYear()} NeoStills &middot; Craft Brewery Control Room
+          &copy; {new Date().getFullYear()} NeoStills &middot; Centro de control para destilacion artesanal
         </p>
       </div>
 
@@ -117,9 +115,7 @@ export default function LoginPage() {
         >
           {/* Mobile logo */}
           <div className="text-center mb-8 lg:hidden">
-            <img src="/favicon.svg" alt="NeoStills" className="w-16 h-16 mx-auto mb-3 drop-shadow-[0_0_20px_rgba(212,160,74,0.3)]" />
-            <h1 className="text-2xl font-bold amber-text">NeoStills</h1>
-            <p className="text-sm text-text-secondary mt-1">{t('app.tagline')}</p>
+            <Logo size="xl" showTagline className="justify-center drop-shadow-[0_0_20px_rgba(34,230,255,0.2)]" />
           </div>
 
           {/* Form card */}

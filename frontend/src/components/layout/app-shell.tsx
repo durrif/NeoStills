@@ -66,7 +66,7 @@ export function AppShell({ children }: AppShellProps) {
   const ambientClass = ambientClasses[brewPhase] ?? 'ambient-idle'
 
   return (
-    <div className={cn('flex h-dvh overflow-hidden bg-bg-primary', ambientClass)}>
+    <div className={cn('system-shell flex h-dvh overflow-hidden bg-bg-primary', ambientClass)}>
       {/* Skip to main content link for accessibility */}
       <a
         href="#main-content"
@@ -74,6 +74,10 @@ export function AppShell({ children }: AppShellProps) {
       >
         Skip to main content
       </a>
+
+      <div className="system-background system-background--main" />
+      <div className="system-background system-background--schematic" />
+      <div className="system-background system-background--vignette" />
 
       {/* Ambient background overlay */}
       <div
@@ -115,7 +119,7 @@ export function AppShell({ children }: AppShellProps) {
       {/* Notification Center */}
       <NotificationCenter open={notifOpen} onClose={closeNotif} />
 
-      {/* AI Brewmaster trigger */}
+      {/* AI trigger */}
       <BarrelTrigger />
 
       {/* Mobile bottom nav */}

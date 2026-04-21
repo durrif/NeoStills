@@ -101,7 +101,7 @@ async def get_current_user(
 
     user_id = decode_access_token(token)
     result = await db.execute(
-        select(User).options(selectinload(User.brewery)).where(User.id == user_id, User.is_active == True)
+        select(User).options(selectinload(User.distillery)).where(User.id == user_id, User.is_active == True)
     )
     user = result.scalar_one_or_none()
     if user is None:

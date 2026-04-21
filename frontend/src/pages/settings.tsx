@@ -61,7 +61,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold amber-text">{t('nav.settings')}</h1>
 
       {/* Profile */}
-      <Section icon={<User className="w-4 h-4 text-amber-400" />} title={t('settings.profile')}>
+      <Section icon={<User className="w-4 h-4 text-accent-copper" />} title={t('settings.profile')}>
         <div className="text-sm text-text-secondary space-y-2">
           <div className="flex justify-between">
             <span className="text-text-primary font-medium">{t('settings.name')}</span>
@@ -80,27 +80,27 @@ export default function SettingsPage() {
         <Separator className="bg-zinc-700" />
 
         <div className="space-y-3">
-          <h3 className="text-sm font-medium text-zinc-300">{t('settings.change_password')}</h3>
+          <h3 className="text-sm font-medium text-text-secondary">{t('settings.change_password')}</h3>
           <div className="space-y-2">
-            <Label className="text-xs text-zinc-400">{t('settings.current_password')}</Label>
+            <Label className="text-xs text-text-tertiary">{t('settings.current_password')}</Label>
             <Input type="password" value={currentPwd} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrentPwd(e.target.value)}
-              className="bg-zinc-900 border-zinc-700 text-sm" />
+              className="bg-bg-tertiary border-white/10 text-sm" />
           </div>
           <div className="space-y-2">
-            <Label className="text-xs text-zinc-400">{t('settings.new_password')}</Label>
+            <Label className="text-xs text-text-tertiary">{t('settings.new_password')}</Label>
             <Input type="password" value={newPwd} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPwd(e.target.value)}
-              className="bg-zinc-900 border-zinc-700 text-sm" />
+              className="bg-bg-tertiary border-white/10 text-sm" />
           </div>
           <div className="space-y-2">
-            <Label className="text-xs text-zinc-400">{t('settings.confirm_password')}</Label>
+            <Label className="text-xs text-text-tertiary">{t('settings.confirm_password')}</Label>
             <Input type="password" value={confirmPwd} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPwd(e.target.value)}
-              className="bg-zinc-900 border-zinc-700 text-sm" />
+              className="bg-bg-tertiary border-white/10 text-sm" />
           </div>
           <Button
             size="sm"
             disabled={!currentPwd || !newPwd || !confirmPwd}
             onClick={changePassword}
-            className="bg-amber-600 hover:bg-amber-700 text-white"
+            className="shadow-glow"
           >
             <Save className="w-3.5 h-3.5 mr-1" /> {t('settings.save_password')}
           </Button>
@@ -109,7 +109,7 @@ export default function SettingsPage() {
 
       {/* Brewery */}
       {brewery && (
-        <Section icon={<Building className="w-4 h-4 text-amber-400" />} title={t('settings.brewery')}>
+        <Section icon={<Building className="w-4 h-4 text-accent-cyan" />} title={t('settings.brewery')}>
           <div className="text-sm text-text-secondary space-y-2">
             <div className="flex justify-between">
               <span className="text-text-primary font-medium">{t('settings.name')}</span>
@@ -126,7 +126,7 @@ export default function SettingsPage() {
       )}
 
       {/* Language */}
-      <Section icon={<Globe className="w-4 h-4 text-amber-400" />} title={t('settings.language')}>
+      <Section icon={<Globe className="w-4 h-4 text-accent-cyan" />} title={t('settings.language')}>
         <div className="flex gap-3">
           {(['es', 'en'] as const).map(lang => (
             <button
@@ -145,9 +145,9 @@ export default function SettingsPage() {
       </Section>
 
       {/* API Keys */}
-      <Section icon={<Key className="w-4 h-4 text-amber-400" />} title={t('settings.integrations')}>
+      <Section icon={<Key className="w-4 h-4 text-accent-copper" />} title={t('settings.integrations')}>
         <div className="space-y-3">
-          <Label className="text-xs text-zinc-400">Brewer's Friend API Key</Label>
+          <Label className="text-xs text-text-tertiary">Clave de importación de recetas</Label>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Input
@@ -155,12 +155,12 @@ export default function SettingsPage() {
                 value={bfKey}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBfKey(e.target.value)}
                 placeholder={t('settings.api_key_placeholder')}
-                className="bg-zinc-900 border-zinc-700 text-sm pr-10"
+                className="bg-bg-tertiary border-white/10 text-sm pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowBfKey((v: boolean) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary"
               >
                 {showBfKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -169,21 +169,21 @@ export default function SettingsPage() {
               size="sm"
               onClick={saveBfKey}
               disabled={!bfKey}
-              className="bg-amber-600 hover:bg-amber-700 text-white"
+              className="shadow-glow"
             >
               <Save className="w-3.5 h-3.5 mr-1" /> {t('actions.save')}
             </Button>
           </div>
-          <p className="text-xs text-zinc-500">
-            La API key se guarda en tu navegador (localStorage) y se usa para importar recetas desde Brewer's Friend.
+          <p className="text-xs text-text-tertiary">
+            La API key se guarda en tu navegador (localStorage) y se usa para importar recetas XML o ZIP desde proveedores compatibles.
           </p>
         </div>
       </Section>
 
       {/* Water profiles placeholder */}
-      <Section icon={<Droplets className="w-4 h-4 text-blue-400" />} title="Perfil de agua">
-        <p className="text-xs text-zinc-400">
-          Configura el perfil de agua de tu cervecería en la herramienta de agua del Dashboard.
+      <Section icon={<Droplets className="w-4 h-4 text-accent-cyan" />} title="Perfil de agua y proofing">
+        <p className="text-xs text-text-tertiary">
+          Configura el perfil de agua de tu destilería en el Laboratorio para ajustar maceración, proofing y consistencia entre lotes.
         </p>
       </Section>
     </div>

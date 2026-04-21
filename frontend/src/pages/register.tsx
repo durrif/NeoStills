@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Mail, Lock, User, Building2, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
+import { Logo } from '@/components/ui/logo'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import type { TokenResponse } from '@/lib/types'
@@ -94,9 +95,8 @@ export default function RegisterPage() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <span className="text-5xl block mb-3">🍺</span>
-          <h1 className="text-2xl font-bold amber-text">NeoStills</h1>
-          <p className="text-sm text-text-secondary mt-1">Craft Brewery Control Room</p>
+          <Logo size="xl" showTagline className="justify-center drop-shadow-[0_0_20px_rgba(34,230,255,0.2)]" />
+          <p className="text-sm text-text-secondary mt-3">Centro de control para destilacion artesanal</p>
         </div>
 
         <div className="glass-card rounded-2xl p-6 shadow-glass">

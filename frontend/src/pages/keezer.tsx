@@ -3,8 +3,8 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Beer, Thermometer, Gauge, Droplets, AlertTriangle,
-  Settings, Plus, GlassWater, TrendingDown, Calendar,
+  Archive, Thermometer, Gauge, Droplets, AlertTriangle,
+  Settings, Plus, GlassWater, TrendingDown,
 } from 'lucide-react'
 import { useUIStore } from '@/stores/ui-store'
 import { useKeezerStore } from '@/stores/keezer-store'
@@ -64,7 +64,7 @@ function KegQuickCard({ tap, selected, onClick, onPour }: {
             </span>
           </div>
           <span className="text-[10px] font-semibold text-[#5A6B80] uppercase tracking-wider">
-            TAP {tap.id}
+            LINEA {tap.id}
           </span>
         </div>
         {pct > 0 && pct < 0.2 && (
@@ -113,9 +113,9 @@ function KegQuickCard({ tap, selected, onClick, onPour }: {
             </span>
             <button
               onClick={(e) => { e.stopPropagation(); onPour() }}
-              className="ml-auto bg-accent-amber/15 border-none rounded-md px-2 py-0.5 text-accent-amber text-[10px] font-semibold cursor-pointer hover:bg-accent-amber/25 transition-colors"
+              className="ml-auto bg-accent-cyan/12 border-none rounded-md px-2 py-0.5 text-accent-cyan text-[10px] font-semibold cursor-pointer hover:bg-accent-cyan/20 transition-colors"
             >
-              🍺 Servir
+              Servicio
             </button>
           </div>
         </>
@@ -138,7 +138,7 @@ function StatsStrip({ taps }: { taps: TapConfig[] }) {
   const lowCount = active.filter(t => t.liters_remaining / t.liters_total < 0.2).length
 
   const stats = [
-    { icon: Beer, label: t('active_kegs'), value: active.length, unit: `/ ${taps.length}`, color: '#F5A623' },
+    { icon: Archive, label: t('active_kegs'), value: active.length, unit: `/ ${taps.length}`, color: '#22E6FF' },
     { icon: Droplets, label: t('total_volume', 'Volumen total'), value: totalLiters.toFixed(1), unit: 'L', color: '#42A5F5' },
     { icon: Thermometer, label: t('avg_temp', 'Temp. media'), value: avgTemp.toFixed(1), unit: '°C', color: '#7CB342' },
     { icon: GlassWater, label: t('total_servings', 'Servicios'), value: totalServings, unit: '', color: '#D4723C' },
@@ -231,8 +231,9 @@ export default function KeezerPage() {
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-5 gap-3">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-[#E8E0D4] font-display">
-            🍻 {t('nav.keezer')}
+          <h1 className="text-xl md:text-2xl font-bold text-[#E8E0D4] font-display flex items-center gap-2">
+            <Archive size={22} className="text-accent-cyan" />
+            {t('nav.keezer')}
           </h1>
           <p className="text-[13px] text-[#8B9BB4] mt-1">
             {t('devices:keezer_subtitle')}
@@ -316,8 +317,9 @@ export default function KeezerPage() {
             transition={{ delay: 0.35 }}
             className="mt-4 glass-card rounded-[14px] p-4"
           >
-            <h3 className="text-[13px] font-semibold text-[#8B9BB4] uppercase tracking-wider mb-3">
-              📊 {t('devices:consumption', 'Consumo')}
+            <h3 className="text-[13px] font-semibold text-[#8B9BB4] uppercase tracking-wider mb-3 flex items-center gap-2">
+              <TrendingDown size={14} className="text-accent-cyan" />
+              {t('devices:consumption', 'Consumo')}
             </h3>
             <ConsumptionChart tapId={selectedTap ?? undefined} />
           </motion.div>
@@ -338,7 +340,7 @@ export default function KeezerPage() {
                 .map(tap => (
                   <div key={tap.id} className="text-xs text-[#E8E0D4] mb-1 flex items-center gap-1.5">
                     <span className="text-accent-amber">⚠️</span>
-                    Tap {tap.id} ({tap.beer_name}): {t('devices:consider_brewing', 'considera preparar más')} {tap.style}
+                    Línea {tap.id} ({tap.beer_name}): {t('devices:consider_brewing', 'considera reponer')} {tap.style}
                     — {t('devices:estimated', 'quedan')} ~{tap.days_remaining} {t('devices:days', 'días')}
                   </div>
                 ))}

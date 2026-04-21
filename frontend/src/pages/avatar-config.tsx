@@ -1,5 +1,5 @@
 // frontend/src/pages/avatar-config.tsx — NeoStills v4 FASE 1
-// Avatar configuration page (Settings > AI Brewmaster)
+// Avatar configuration page (Settings > Genio Destilador)
 // Full wizard: source → style → personality → voice
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -35,23 +35,23 @@ const DAVID_AVATAR = {
 }
 
 const PRESETS: Array<{ id: PresetCharacter; label: string; emoji: string; desc: string; imageUrl?: string }> = [
-  { id: 'david', label: 'Comandante Lara', emoji: '🧞', desc: 'Tu genio cervecero personalizado con voz propia', imageUrl: DAVID_AVATAR.imageUrl },
-  { id: 'maestro', label: 'El Maestro Cervecero', emoji: '🧔', desc: 'Sabio, barbudo, con delantal' },
-  { id: 'cientifica', label: 'La Científica del Lúpulo', emoji: '👩‍🔬', desc: 'Bata de laboratorio, pendientes de lúpulo' },
-  { id: 'punk', label: 'El Punk Brewer', emoji: '🎸', desc: 'Mohawk, tatuajes, espíritu DIY' },
-  { id: 'hop3000', label: 'HOP-3000', emoji: '🤖', desc: 'Robot amigable, chasis cobre/ámbar' },
+  { id: 'david', label: 'Comandante Lara', emoji: '🧞', desc: 'Tu genio destilador personalizado con voz propia', imageUrl: DAVID_AVATAR.imageUrl },
+  { id: 'maestro', label: 'Maestro Destilador', emoji: '🧔', desc: 'Sereno, técnico y con criterio de bodega' },
+  { id: 'cientifica', label: 'La Científica del Alambique', emoji: '👩‍🔬', desc: 'Bata de laboratorio, enfoque técnico y sensorial' },
+  { id: 'punk', label: 'El Destilador Punk', emoji: '🎸', desc: 'DIY, directo y con energía de taller' },
+  { id: 'hop3000', label: 'COPPER-3000', emoji: '🤖', desc: 'Robot amigable, chasis cobre y cian' },
 ]
 
 const STYLES: Array<{ id: AvatarStyle; label: string; desc: string }> = [
   { id: 'cartoon', label: 'Cartoon / Pixar', desc: 'Estilo animado, líneas limpias' },
   { id: 'realistic', label: '3D Realista', desc: 'Hiperrealista, iluminación cinematográfica' },
   { id: 'anime', label: 'Anime', desc: 'Estilo japonés, sombreado cel' },
-  { id: 'classic', label: 'Brewmaster Classic', desc: 'Ilustración tradicional, tonos vintage' },
+  { id: 'classic', label: 'Distillery Classic', desc: 'Ilustración artesanal, tonos cobre y bodega' },
 ]
 
 const PERSONALITIES: Array<{ id: PersonalityType; label: string; emoji: string; desc: string }> = [
   { id: 'professional', label: 'Profesional', emoji: '🎓', desc: 'Claro, preciso, enciclopédico' },
-  { id: 'casual', label: 'Colega de bar', emoji: '🍻', desc: 'Casual, bromas, chistes cerveceros' },
+  { id: 'casual', label: 'Cercano', emoji: '😄', desc: 'Directo, humano y con humor de taller' },
   { id: 'sarcastic', label: 'Irónico', emoji: '😏', desc: 'Ingenioso, humor seco, brutalmente honesto' },
   { id: 'shy', label: 'Tímido', emoji: '🙈', desc: 'Suave, muy educado, cuidadoso' },
   { id: 'demanding', label: 'Maestro exigente', emoji: '💪', desc: 'Exigente, estándares altos' },
@@ -183,10 +183,10 @@ export default function AvatarConfigPage() {
         </Link>
         <div>
           <h1 className="text-xl font-display font-bold text-text-primary">
-            AI Brewmaster
+            Genio Destilador
           </h1>
           <p className="text-sm text-text-secondary">
-            Configura tu asistente cervecero con IA
+            Configura tu asistente destilador con IA
           </p>
         </div>
       </div>
@@ -239,7 +239,7 @@ export default function AvatarConfigPage() {
                   <User size={32} className="text-accent-amber mb-3" />
                   <h3 className="font-semibold text-text-primary mb-1">Personaje predefinido</h3>
                   <p className="text-xs text-text-secondary">
-                    Elige entre 4 personajes cerveceros únicos
+                    Elige entre personajes de destilación, taller y operación
                   </p>
                 </button>
               </div>
@@ -467,7 +467,7 @@ export default function AvatarConfigPage() {
                 style={{ background: 'var(--gradient-magic)' }}
               >
                 <Sparkles size={18} />
-                Activar El Genio Cervecero
+                Activar el Genio Destilador
               </button>
             </div>
           )}
@@ -488,7 +488,7 @@ export default function AvatarConfigPage() {
               </motion.div>
 
               <h2 className="text-xl font-display font-bold text-text-primary mb-2">
-                ¡Tu Genio Cervecero está listo!
+                ¡Tu Genio Destilador está listo!
               </h2>
               <p className="text-sm text-text-secondary mb-8 max-w-sm">
                 Haz clic en el barril flotante en cualquier página para invocar a tu asistente con IA.

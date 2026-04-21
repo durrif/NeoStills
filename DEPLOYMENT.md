@@ -41,12 +41,12 @@ docker compose -f docker-compose.production.yml exec backend \
 
 ```nginx
 server {
-    server_name neostills.es www.neostills.es;
+    server_name neostills.com www.neostills.com;
     listen 443 ssl http2;
 
     # SSL certs (Let's Encrypt via certbot)
-    ssl_certificate /etc/letsencrypt/live/neostills.es/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/neostills.es/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/neostills.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/neostills.com/privkey.pem;
 
     # API proxy
     location /api/ {

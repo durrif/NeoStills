@@ -34,10 +34,10 @@ const colorMap = {
 
 // Demo notifications — will be replaced with real data
 const demoNotifications: Notification[] = [
-  { id: '1', type: 'danger', title: 'Ingrediente caducado', message: 'Challenger (lúpulo) ha superado la fecha de caducidad', time: '2h', read: false },
-  { id: '2', type: 'warning', title: 'iSpindel batería baja', message: 'El dispositivo "Hop Monster" tiene un 15% de batería', time: '4h', read: false },
-  { id: '3', type: 'success', title: 'Fermentación estable', message: 'Fermentador #2 lleva 24h en gravedad estable (1.012)', time: '6h', read: true },
-  { id: '4', type: 'info', title: 'Nuevos precios disponibles', message: 'La Tienda del Cervecero ha actualizado su catálogo', time: '1d', read: true },
+  { id: '1', type: 'danger', title: 'Maceración fuera de rango', message: 'El pH estimado del lote Bourbon #12 supera el objetivo de 5.4', time: '2h', read: false },
+  { id: '2', type: 'warning', title: 'iSpindel batería baja', message: 'El dispositivo "Wash Tank 1" tiene un 15% de batería', time: '4h', read: false },
+  { id: '3', type: 'success', title: 'Fermentación estable', message: 'Fermentador #2 mantiene gravedad estable durante 24h', time: '6h', read: true },
+  { id: '4', type: 'info', title: 'Nueva oferta disponible', message: 'La Tienda del Destilador ha actualizado su catálogo técnico', time: '1d', read: true },
 ]
 
 export function NotificationCenter({ open, onClose }: NotificationCenterProps) {

@@ -190,7 +190,7 @@ export default function VisionPanel() {
                   Cámara — {PHASE_OPTIONS.find((p) => p.value === activeCoachPhase)?.label}
                 </p>
                 <p className="text-[10px] text-text-tertiary mt-1">
-                  Conecta tu cámara BeerGate HW o usa la cámara del móvil
+                  Conecta tu cámara NeoStills HW o usa la cámara del móvil
                 </p>
               </div>
               {/* Status overlay */}

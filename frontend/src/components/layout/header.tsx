@@ -6,6 +6,7 @@ import { Search, Bell, Globe, ChevronDown, ChevronRight, User, Settings, LogOut 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUIStore } from '@/stores/ui-store'
+import { Logo } from '@/components/ui/logo'
 import { cn } from '@/lib/utils'
 
 // Breadcrumb helpers
@@ -64,9 +65,9 @@ export function Header({ onOpenCommandPalette, onOpenNotifications }: HeaderProp
   return (
     <header className="shrink-0" role="banner">
       {/* Top bar */}
-      <div className="h-14 flex items-center gap-4 px-4 md:px-6 bg-bg-secondary border-b border-white/[0.06]">
+      <div className="h-14 flex items-center gap-4 px-4 md:px-6 bg-bg-secondary/70 backdrop-blur-xl border-b border-accent-cobalt/20">
         {/* Logo (mobile only) */}
-        <img src="/logo-icon.svg" alt="NeoStills" className="w-7 h-7 md:hidden shrink-0" />
+        <Logo size="sm" showText={false} className="md:hidden shrink-0" />
 
         {/* Search trigger — opens command palette */}
         <button
@@ -74,18 +75,24 @@ export function Header({ onOpenCommandPalette, onOpenNotifications }: HeaderProp
           className="flex-1 max-w-md"
           aria-label={t('actions.search')}
         >
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-tertiary border border-white/[0.06] hover:border-white/[0.1] transition-colors cursor-pointer">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-tertiary/70 border border-accent-cobalt/20 hover:border-accent-cobalt/40 transition-colors cursor-pointer backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
             <Search size={15} className="text-text-tertiary" />
             <span className="text-sm text-text-tertiary flex-1 text-left">{t('actions.search')}...</span>
             <span className="kbd hidden sm:inline">⌘K</span>
           </div>
         </button>
 
+        <div className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full border border-accent-cobalt/25 bg-bg-card/60 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+          <span className="iot-pulse-dot" />
+          <span className="text-[10px] uppercase tracking-[0.18em] text-text-tertiary">Sensores online</span>
+          <span className="text-sm font-mono live-value">12/12</span>
+        </div>
+
         <div className="flex items-center gap-1.5 ml-auto">
           {/* Language */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-text-tertiary hover:text-text-primary hover:bg-bg-hover transition-all"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-sm font-medium text-text-tertiary hover:text-text-primary hover:bg-bg-hover/70 border border-transparent hover:border-accent-cobalt/20 transition-all"
             title={t('settings.language')}
             aria-label={t('settings.language')}
           >
@@ -96,7 +103,7 @@ export function Header({ onOpenCommandPalette, onOpenNotifications }: HeaderProp
           {/* Notifications */}
           <button
             onClick={onOpenNotifications}
-            className="relative p-2 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-bg-hover transition-all"
+            className="relative p-2 rounded-xl text-text-tertiary hover:text-text-primary hover:bg-bg-hover/70 border border-transparent hover:border-accent-cobalt/20 transition-all"
             aria-label="Notifications"
           >
             <Bell size={18} />
@@ -111,7 +118,7 @@ export function Header({ onOpenCommandPalette, onOpenNotifications }: HeaderProp
           <div className="relative hidden md:block" ref={userMenuRef}>
             <button
               onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg hover:bg-bg-hover transition-all"
+              className="flex items-center gap-2 pl-2 pr-1 py-1 rounded-xl border border-transparent hover:border-accent-cobalt/20 hover:bg-bg-hover/70 transition-all"
               aria-label="User menu"
               aria-haspopup="menu"
               aria-expanded={userMenuOpen}
@@ -130,7 +137,7 @@ export function Header({ onOpenCommandPalette, onOpenNotifications }: HeaderProp
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
-                  className="absolute right-0 top-full mt-2 w-52 glass-card rounded-xl shadow-elevated z-50 py-1 overflow-hidden"
+                  className="absolute right-0 top-full mt-2 w-52 glass-card rounded-2xl shadow-elevated z-50 py-1 overflow-hidden border border-accent-cobalt/20"
                 >
                   <div className="px-4 py-3 border-b border-white/[0.06]">
                     <p className="text-sm font-medium text-text-primary">{user?.full_name}</p>
@@ -160,7 +167,7 @@ export function Header({ onOpenCommandPalette, onOpenNotifications }: HeaderProp
 
       {/* Breadcrumb bar */}
       {breadcrumbLabel && currentPath !== '/' && (
-        <div className="px-4 md:px-6 py-2 bg-bg-primary/50 border-b border-white/[0.03]">
+        <div className="px-4 md:px-6 py-2 bg-bg-primary/45 backdrop-blur-md border-b border-accent-cobalt/10">
           <nav className="breadcrumb" aria-label="breadcrumb">
             <a href="/" onClick={(e) => { e.preventDefault(); void navigate({ to: '/' }) }}>
               {t('nav.overview')}

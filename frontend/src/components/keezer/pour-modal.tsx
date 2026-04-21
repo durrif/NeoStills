@@ -6,10 +6,10 @@ import type { TapConfig } from '@/data/kegs'
 import { useKeezerStore } from '@/stores/keezer-store'
 
 const PRESETS = [
-  { label: 'Caña', ml: 200 },
-  { label: 'Doble', ml: 330 },
-  { label: 'Pinta', ml: 473 },
-  { label: 'Jarra', ml: 500 },
+  { label: 'Muestra', ml: 50 },
+  { label: 'Tasting', ml: 100 },
+  { label: 'Copa', ml: 200 },
+  { label: 'Botella', ml: 500 },
 ]
 
 interface PourModalProps {
@@ -45,9 +45,9 @@ export default function PourModal({ tap, onClose }: PourModalProps) {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-text-primary">
-                Servir — Tap {tap.id}
+                Servicio rápido — Línea {tap.id}
               </h3>
-              <p className="text-xs text-text-tertiary">{tap.beer_name}</p>
+              <p className="text-xs text-text-tertiary">{tap.beer_name || 'Lote asignado'}</p>
             </div>
           </div>
           <button
@@ -109,11 +109,11 @@ export default function PourModal({ tap, onClose }: PourModalProps) {
           disabled={volumeMl <= 0 || tap.liters_remaining <= 0}
           className="w-full py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
-            background: 'linear-gradient(135deg, #F5A623, #D4723C)',
+            background: 'linear-gradient(135deg, #D1A178, #22E6FF)',
             color: '#0A0E14',
           }}
         >
-          🍺 Servir {volumeMl}ml
+          Registrar salida {volumeMl}ml
         </button>
       </motion.div>
     </div>

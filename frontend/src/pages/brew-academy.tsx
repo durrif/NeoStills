@@ -239,7 +239,7 @@ export default function BrewAcademyPage() {
           <div>
             <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <TimerIcon size={12} className="text-accent-hop" />
-              Brew Coach Mode
+              Modo Coach de Proceso
             </h3>
             <BrewCoach />
           </div>

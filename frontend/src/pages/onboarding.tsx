@@ -136,7 +136,14 @@ export default function OnboardingPage() {
   const validation = useMemo(() => validateStep(currentStep), [currentStep, validateStep, stills, facility, profile])
 
   const canGoBack = currentStep > 1 && !saving
-  const canContinue = validation.valid && !saving
+  // Step 2: button is clickable even with empty stills if facility name + capacity are present
+  // (goNext will auto-register the still before validating)
+  const hasPendingStillData =
+    currentStep === 2 &&
+    stills.length === 0 &&
+    !!facility.name.trim() &&
+    Number(stillCapacity) > 0
+  const canContinue = (validation.valid || hasPendingStillData) && !saving
   const canSkip = (currentStep === 3 || currentStep === 4) && !saving
 
   const addStillHandler = () => {
@@ -191,8 +198,29 @@ export default function OnboardingPage() {
 
   const goNext = async () => {
     if (currentStep < 5) {
-      if (!validation.valid) {
-        toast.error(validation.errors[0] ?? 'Revisa los campos requeridos')
+      // Step 2: auto-add still if form has capacity but no stills registered yet.
+      // Zustand addStill() is synchronous, so validateStep() below will see the new item.
+      if (currentStep === 2 && stills.length === 0 && Number(stillCapacity) > 0) {
+        const autoName =
+          stillName.trim() ||
+          `${stillTypeOptions.find((o) => o.value === stillType)?.label ?? 'Alambique'} principal`
+        addStill({
+          name: autoName,
+          type: stillType,
+          capacityLiters: Number(stillCapacity),
+          material: stillMaterial,
+          heaterType: 'gas',
+          hasParrot: true,
+          condenserType: 'shell_tube',
+          locationZone: facility.zones[0],
+        })
+        setStillName('')
+        setStillCapacity('50')
+      }
+      // Re-read validation from store after the possible auto-add (get() is synchronous)
+      const freshValidation = validateStep(currentStep)
+      if (!freshValidation.valid) {
+        toast.error(freshValidation.errors[0] ?? 'Revisa los campos requeridos')
         return
       }
       completeStep(currentStep)

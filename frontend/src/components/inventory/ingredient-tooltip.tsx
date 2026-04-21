@@ -1,12 +1,11 @@
-// src/components/inventory/ingredient-tooltip.tsx — NeoStills v4
-// Rich hover tooltip with real DB data: substitutes, styles, specs
+// src/components/inventory/ingredient-tooltip.tsx — NeoStills v4 distillery
+// Ingredient details with matched type, technical specs, recommended uses
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, Sparkles, FlaskConical, ArrowRightLeft, Thermometer, Droplets, Gauge } from 'lucide-react'
+import { MapPin, Zap } from 'lucide-react'
 import { categoryColor, categoryIcon } from '@/lib/utils'
 import {
-  matchIngredient, getSubstitutes, getCompatibleStyles,
-  originToFlag, type SubstituteInfo,
+  matchIngredient, originToFlag,
 } from '@/lib/ingredient-matcher'
 import type { Ingredient } from '@/lib/types'
 
@@ -15,26 +14,12 @@ interface IngredientTooltipProps {
   allInventory?: Ingredient[]
 }
 
-export function IngredientTooltip({ ingredient, allInventory = [] }: IngredientTooltipProps) {
+export function IngredientTooltip({ ingredient }: IngredientTooltipProps) {
   const catColor = categoryColor(ingredient.category)
   const emoji = categoryIcon(ingredient.category)
 
   const matched = useMemo(() => matchIngredient(ingredient), [ingredient])
-  const substitutes = useMemo(() => getSubstitutes(matched, allInventory), [matched, allInventory])
-  const styles = useMemo(() => getCompatibleStyles(matched), [matched])
-
-  // Flavor: prefer DB data, fall back to ingredient.flavor_profile
-  const flavors = useMemo(() => {
-    if (matched?.type === 'malt') return matched.spec.flavor.split(',').map(s => s.trim())
-    if (matched?.type === 'hop') return matched.spec.flavor
-    if (matched?.type === 'yeast') return matched.spec.flavor.split(',').map(s => s.trim())
-    return ingredient.flavor_profile?.split(',').map(s => s.trim()).filter(Boolean) ?? []
-  }, [matched, ingredient.flavor_profile])
-
-  // Origin: prefer DB origin code, fall back to ingredient.origin
-  const origin = matched?.type === 'malt' ? matched.spec.origin
-    : matched?.type === 'hop' ? matched.spec.origin
-    : ingredient.origin
+  const originFlag = ingredient.origin ? originToFlag(ingredient.origin) : '🌍'
 
   return (
     <motion.div
@@ -52,21 +37,9 @@ export function IngredientTooltip({ ingredient, allInventory = [] }: IngredientT
             <p className="font-display font-bold text-sm text-text-primary truncate">
               {ingredient.name}
             </p>
-            <div className="flex items-center gap-1.5">
-              {ingredient.supplier && (
-                <span className="text-[10px] text-text-tertiary">{ingredient.supplier}</span>
-              )}
-              {matched?.type === 'malt' && (
-                <span className="text-[10px] px-1 rounded bg-white/5 text-text-tertiary border border-white/5">
-                  {matched.spec.brand}
-                </span>
-              )}
-              {matched?.type === 'yeast' && (
-                <span className="text-[10px] px-1 rounded bg-white/5 text-text-tertiary border border-white/5">
-                  {matched.spec.brand} · {matched.spec.form}
-                </span>
-              )}
-            </div>
+            {ingredient.supplier && (
+              <p className="text-[10px] text-text-tertiary">{ingredient.supplier}</p>
+            )}
           </div>
           <div
             className="h-3 w-3 rounded-full ring-2 ring-white/10"
@@ -75,111 +48,48 @@ export function IngredientTooltip({ ingredient, allInventory = [] }: IngredientT
         </div>
 
         {/* Origin */}
-        {origin && (
+        {ingredient.origin && (
           <div className="flex items-center gap-1.5 text-xs text-text-secondary">
             <MapPin size={11} className="text-text-tertiary" />
-            <span>{originToFlag(origin)} {origin}</span>
+            <span>{originFlag} {ingredient.origin}</span>
           </div>
         )}
 
-        {/* Technical specs — compact row */}
-        {matched?.type === 'malt' && (
-          <div className="flex gap-3 text-[10px] text-text-secondary">
-            <span className="flex items-center gap-0.5">
-              <Droplets size={9} className="text-amber-400" />
-              {matched.spec.color_ebc} EBC
-            </span>
-            <span className="font-mono">{matched.spec.potential_sg.toFixed(3)} SG</span>
-            {matched.spec.diastatic_power != null && (
-              <span>{matched.spec.diastatic_power}°L DP</span>
-            )}
-            <span className="ml-auto">{matched.spec.type}</span>
-          </div>
-        )}
-        {matched?.type === 'hop' && (
-          <div className="flex gap-3 text-[10px] text-text-secondary">
-            <span className="flex items-center gap-0.5">
-              <Gauge size={9} className="text-green-400" />
-              α {matched.spec.alpha_acid_min}–{matched.spec.alpha_acid_max}%
-            </span>
-            <span>β {matched.spec.beta_acid_min}–{matched.spec.beta_acid_max}%</span>
-            <span className="ml-auto capitalize">{matched.spec.usage}</span>
-          </div>
-        )}
-        {matched?.type === 'yeast' && (
-          <div className="flex gap-3 text-[10px] text-text-secondary">
-            <span className="flex items-center gap-0.5">
-              <Thermometer size={9} className="text-blue-400" />
-              {matched.spec.temp_min}–{matched.spec.temp_max}°C
-            </span>
-            <span>Att: {matched.spec.attenuation_min}–{matched.spec.attenuation_max}%</span>
-            <span className="ml-auto capitalize">{matched.spec.flocculation}</span>
+        {/* Flavor profile */}
+        {ingredient.flavor_profile && (
+          <div className="flex gap-1 flex-wrap">
+            {ingredient.flavor_profile.split(',').map((f, i) => (
+              <span key={i} className="text-[10px] px-1.5 py-0.5 rounded-sm bg-white/5 text-text-secondary border border-white/5">
+                {f.trim()}
+              </span>
+            ))}
           </div>
         )}
 
-        {/* Flavor descriptors */}
-        {flavors.length > 0 && (
-          <div>
-            <div className="flex items-center gap-1 mb-1">
-              <Sparkles size={10} className="text-accent-amber" />
-              <span className="text-[10px] text-text-tertiary font-medium">Perfil de sabor</span>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {flavors.slice(0, 6).map(f => (
-                <span
-                  key={f}
-                  className="px-1.5 py-0.5 rounded text-[10px] border border-white/8 bg-white/5 text-text-secondary"
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
+        {/* Matched type + recommended uses */}
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-xs text-text-secondary">
+            <Zap size={10} className="text-amber-400" />
+            <span className="font-mono capitalize">{matched.type.replace(/_/g, ' ')}</span>
           </div>
-        )}
+          {matched.recommendedUses.length > 0 && (
+            <div className="text-[10px] text-text-tertiary">
+              <span className="font-semibold text-text-secondary">Usos recomendados:</span>
+              <p className="mt-0.5">{matched.recommendedUses.join(', ')}</p>
+            </div>
+          )}
+        </div>
 
-        {/* Suitable styles */}
-        {styles.length > 0 && (
-          <div>
-            <div className="flex items-center gap-1 mb-1">
-              <FlaskConical size={10} className="text-accent-hop" />
-              <span className="text-[10px] text-text-tertiary font-medium">Estilos compatibles</span>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {styles.slice(0, 5).map(s => (
-                <span
-                  key={s}
-                  className="px-1.5 py-0.5 rounded text-[10px] border border-accent-hop/20 bg-accent-hop/10 text-accent-hop"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Substitutes with stock availability */}
-        {substitutes.length > 0 && (
-          <div>
-            <div className="flex items-center gap-1 mb-1">
-              <ArrowRightLeft size={10} className="text-accent-copper" />
-              <span className="text-[10px] text-text-tertiary font-medium">Sustitutos</span>
-            </div>
-            <div className="space-y-0.5">
-              {substitutes.map((s: SubstituteInfo) => (
-                <div key={s.name} className="flex items-center gap-1.5 text-[10px]">
-                  <div className={`h-1.5 w-1.5 rounded-full ${s.inStock ? 'bg-emerald-400' : 'bg-red-400/60'}`} />
-                  <span className="text-text-secondary">{s.name}</span>
-                  {s.inStock && s.quantity != null && (
-                    <span className="ml-auto font-mono text-text-tertiary">
-                      {s.quantity} {s.unit}
-                    </span>
-                  )}
-                  {!s.inStock && (
-                    <span className="ml-auto text-text-tertiary italic">sin stock</span>
-                  )}
-                </div>
-              ))}
-            </div>
+        {/* Technical info */}
+        {Object.keys(matched.technical ?? {}).length > 0 && (
+          <div className="pt-1 border-t border-white/10">
+            <p className="text-[10px] font-semibold text-text-secondary mb-1">Técnico</p>
+            {Object.entries(matched.technical ?? {}).map(([k, v]) => (
+              <div key={k} className="text-[9px] text-text-tertiary flex justify-between">
+                <span className="capitalize">{k.replace(/_/g, ' ')}:</span>
+                <span className="text-text-secondary font-mono">{String(v)}</span>
+              </div>
+            ))}
           </div>
         )}
 

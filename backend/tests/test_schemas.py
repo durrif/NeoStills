@@ -23,8 +23,10 @@ class TestRegisterRequest:
             email="test@neostills.es",
             password="Strong1234!",
             full_name="John Doe",
+            brewery_name="NeoStills Lab",
         )
         assert req.email == "test@neostills.es"
+        assert req.brewery_name == "NeoStills Lab"
 
     def test_weak_password_no_uppercase(self):
         with pytest.raises(ValidationError, match="uppercase"):

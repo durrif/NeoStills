@@ -42,8 +42,8 @@ limiter = Limiter(key_func=get_remote_address)
 
 # ─── Register (self-service) ──────────────────────────────────────────────────
 
-@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db)) -> User:
+@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db)) -> dict:
     """Registrar una cuenta nueva con su destilería por defecto."""
     # Check uniqueness
     existing = await db.execute(select(User).where(User.email == payload.email))
@@ -64,13 +64,20 @@ async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db))
 
     # Crear destilería por defecto
     distillery = Distillery(
-        name=f"destilería de {payload.full_name}",
+        name=payload.brewery_name or f"destilería de {payload.full_name}",
         owner_id=user.id,
     )
     db.add(distillery)
     await db.commit()
     await db.refresh(user)
-    return user
+    await db.refresh(distillery)
+    return {
+        "access_token": create_access_token(user.id),
+        "refresh_token": create_refresh_token(user.id),
+        "token_type": "bearer",
+        "user": UserOut.model_validate(user).model_dump(),
+        "brewery": DistilleryOut.model_validate(distillery).model_dump(),
+    }
 
 
 # ─── Login ────────────────────────────────────────────────────────────────────

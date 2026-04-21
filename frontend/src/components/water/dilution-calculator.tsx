@@ -20,9 +20,9 @@ export function DilutionCalculator() {
   const srcLiters = Math.round(totalVolume * (1 - roFraction) * 10) / 10
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-1 flex items-center gap-2">
-        <Droplets size={14} className="text-accent-info" />
+        <Droplets size={14} className="text-accent-cobalt" />
         Dilución con agua RO/destilada
       </h3>
       <p className="text-[10px] text-text-tertiary mb-4">
@@ -44,7 +44,7 @@ export function DilutionCalculator() {
           <span className="text-accent-amber font-medium">
             {Math.round((1 - roFraction) * 100)}% origen ({srcLiters} L)
           </span>
-          <span className="text-accent-info font-medium">
+          <span className="text-accent-cobalt font-medium">
             {Math.round(roFraction * 100)}% RO ({roLiters} L)
           </span>
         </div>
@@ -57,7 +57,7 @@ export function DilutionCalculator() {
           style={{ width: `${(1 - roFraction) * 100}%` }}
         />
         <div
-          className="h-full bg-accent-info/40 transition-all duration-300"
+          className="h-full bg-accent-cobalt/50 transition-all duration-300"
           style={{ width: `${roFraction * 100}%` }}
         />
       </div>
@@ -66,7 +66,7 @@ export function DilutionCalculator() {
       {hasSource && roFraction > 0 && (
         <div className="grid grid-cols-3 gap-2">
           {ION_KEYS.map((ion) => (
-            <div key={ion} className="text-center p-1.5 rounded-lg bg-bg-deep/50">
+            <div key={ion} className="text-center p-1.5 rounded-xl border border-accent-cobalt/12 bg-bg-deep/40">
               <div className="text-[10px] text-text-tertiary">{ION_LABELS[ion]?.label}</div>
               <div className="flex items-center justify-center gap-1">
                 <span className="text-[9px] text-text-tertiary line-through">

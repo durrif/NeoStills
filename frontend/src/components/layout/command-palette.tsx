@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, LayoutDashboard, Beaker, FlaskConical, BookOpen,
-  Package, ShoppingCart, Cpu, Beer, BarChart3, Bot, Settings,
+  Package, ShoppingCart, Cpu, Archive, BarChart3, Bot, Settings,
   ArrowRight,
 } from 'lucide-react'
 
@@ -33,15 +33,15 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
   const commands = useMemo<CommandItem[]>(() => [
     { id: 'nav-overview', label: t('nav.overview'), category: 'nav', icon: LayoutDashboard, action: () => void navigate({ to: '/' }), keywords: 'dashboard home inicio' },
-    { id: 'nav-brew', label: t('nav.brew_day'), category: 'nav', icon: Beaker, action: () => void navigate({ to: '/brewing' }), keywords: 'elaboración brew mash boil' },
+    { id: 'nav-brew', label: t('nav.brew_day'), category: 'nav', icon: Beaker, action: () => void navigate({ to: '/brewing' }), keywords: 'destilacion mash wash spirit run stripping' },
     { id: 'nav-ferm', label: t('nav.fermentation'), category: 'nav', icon: FlaskConical, action: () => void navigate({ to: '/fermentation' }), keywords: 'fermentación fermenter ispindel' },
     { id: 'nav-recipes', label: t('nav.recipes'), category: 'nav', icon: BookOpen, action: () => void navigate({ to: '/recipes' }), keywords: 'recetas recipe ipa stout' },
     { id: 'nav-inv', label: t('nav.inventory'), category: 'nav', icon: Package, action: () => void navigate({ to: '/inventory' }), keywords: 'inventario stock ingredientes' },
-    { id: 'nav-proc', label: t('nav.procurement'), category: 'nav', icon: ShoppingCart, action: () => void navigate({ to: '/procurement' }), keywords: 'compras tienda proveedores' },
-    { id: 'nav-devices', label: t('nav.devices'), category: 'nav', icon: Cpu, action: () => void navigate({ to: '/devices' }), keywords: 'dispositivos sensor iot' },
-    { id: 'nav-keezer', label: t('nav.keezer'), category: 'nav', icon: Beer, action: () => void navigate({ to: '/keezer' }), keywords: 'keezer barril grifo tap' },
+    { id: 'nav-proc', label: t('nav.procurement'), category: 'nav', icon: ShoppingCart, action: () => void navigate({ to: '/procurement' }), keywords: 'compras granos botanicos proveedores' },
+    { id: 'nav-devices', label: t('nav.devices'), category: 'nav', icon: Cpu, action: () => void navigate({ to: '/devices' }), keywords: 'alambique still condensador sensor iot' },
+    { id: 'nav-keezer', label: t('nav.keezer'), category: 'nav', icon: Archive, action: () => void navigate({ to: '/keezer' }), keywords: 'aging barrel barrica maduracion storage' },
     { id: 'nav-analytics', label: t('nav.analytics'), category: 'nav', icon: BarChart3, action: () => void navigate({ to: '/analytics' }), keywords: 'estadísticas analytics' },
-    { id: 'nav-ai', label: t('nav.ai_assistant'), category: 'nav', icon: Bot, action: () => { onClose(); import('@/stores/ui-store').then(m => m.useUIStore.getState().openAiPanel()) }, keywords: 'ai asistente chat' },
+    { id: 'nav-ai', label: t('nav.ai_assistant'), category: 'nav', icon: Bot, action: () => { onClose(); import('@/stores/ui-store').then(m => m.useUIStore.getState().openAiPanel()) }, keywords: 'ai genio destilador chat cortes recetas' },
     { id: 'nav-settings', label: t('nav.settings'), category: 'nav', icon: Settings, action: () => void navigate({ to: '/settings' }), keywords: 'ajustes configuración' },
   ], [t, navigate, onClose])
 

@@ -40,7 +40,10 @@ class DistillationMethod(str, enum.Enum):
 class Recipe(Base):
     __tablename__ = "recipes"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        primary_key=True,
+    )
     distillery_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("distilleries.id", ondelete="CASCADE"), nullable=False, index=True
     )

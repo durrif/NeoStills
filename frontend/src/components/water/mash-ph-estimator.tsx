@@ -47,7 +47,7 @@ export function MashPHEstimator() {
   }
 
   return (
-    <div className="glass-card rounded-xl p-4">
+    <div className="glass-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-1">
         Estimador de pH del macerado
       </h3>
@@ -65,7 +65,7 @@ export function MashPHEstimator() {
             step={0.5}
             value={mashVolume}
             onChange={(e) => setMashVolume(parseFloat(e.target.value) || 1)}
-            className="w-full px-2 py-1.5 bg-bg-deep border border-white/5 rounded-lg text-xs text-text-primary font-mono text-right focus:outline-none focus:border-accent-amber/40"
+            className="w-full px-2 py-1.5 bg-bg-deep/80 border border-accent-cobalt/14 rounded-xl text-xs text-text-primary font-mono text-right focus:outline-none focus:border-accent-cobalt/34"
           />
         </div>
         <div>
@@ -76,7 +76,7 @@ export function MashPHEstimator() {
             step={0.5}
             value={spargeVolume}
             onChange={(e) => setSpargeVolume(parseFloat(e.target.value) || 0)}
-            className="w-full px-2 py-1.5 bg-bg-deep border border-white/5 rounded-lg text-xs text-text-primary font-mono text-right focus:outline-none focus:border-accent-amber/40"
+            className="w-full px-2 py-1.5 bg-bg-deep/80 border border-accent-cobalt/14 rounded-xl text-xs text-text-primary font-mono text-right focus:outline-none focus:border-accent-cobalt/34"
           />
         </div>
       </div>
@@ -88,7 +88,7 @@ export function MashPHEstimator() {
             <select
               value={grain.type}
               onChange={(e) => updateGrain(i, 'type', e.target.value)}
-              className="flex-1 px-2 py-1.5 bg-bg-deep border border-white/5 rounded-lg text-xs text-text-primary focus:outline-none focus:border-accent-amber/40 appearance-none"
+              className="flex-1 px-2 py-1.5 bg-bg-deep/80 border border-accent-cobalt/14 rounded-xl text-xs text-text-primary focus:outline-none focus:border-accent-cobalt/34 appearance-none"
             >
               {GRAIN_TYPES.map((gt) => (
                 <option key={gt.value} value={gt.value}>
@@ -102,7 +102,7 @@ export function MashPHEstimator() {
               step={0.1}
               value={grain.amount_kg}
               onChange={(e) => updateGrain(i, 'amount_kg', parseFloat(e.target.value) || 0)}
-              className="w-20 px-2 py-1.5 bg-bg-deep border border-white/5 rounded-lg text-xs text-text-primary font-mono text-right focus:outline-none focus:border-accent-amber/40"
+              className="w-20 px-2 py-1.5 bg-bg-deep/80 border border-accent-cobalt/14 rounded-xl text-xs text-text-primary font-mono text-right focus:outline-none focus:border-accent-cobalt/34"
             />
             <span className="text-[10px] text-text-tertiary">kg</span>
             {grainBill.length > 1 && (
@@ -145,7 +145,7 @@ export function MashPHEstimator() {
       </div>
 
       {/* Results */}
-      <div className="bg-bg-deep/50 rounded-lg p-3 space-y-3">
+      <div className="bg-bg-deep/45 rounded-2xl border border-accent-cobalt/12 p-3 space-y-3">
         {/* Estimated pH */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-text-secondary">pH estimado</span>
@@ -176,9 +176,9 @@ export function MashPHEstimator() {
               ? 'bg-status-warning/10 text-status-warning'
               : 'bg-accent-info/10 text-accent-info'
         }`}>
-          {phIsGood && '✅ pH dentro del rango ideal. ¡Buen macerado!'}
-          {phTooHigh && `⚠️ pH ${phDiff.toFixed(2)} por encima del objetivo. Añade ácido láctico o malta acidulada.`}
-          {phTooLow && `ℹ️ pH ${Math.abs(phDiff).toFixed(2)} por debajo del objetivo. Añade bicarbonato de sodio o carbonato de calcio.`}
+          {phIsGood && 'pH dentro del rango ideal para el macerado.'}
+          {phTooHigh && `pH ${phDiff.toFixed(2)} por encima del objetivo. Corrige con ácido láctico o malta acidulada.`}
+          {phTooLow && `pH ${Math.abs(phDiff).toFixed(2)} por debajo del objetivo. Compensa con bicarbonato de sodio o carbonato de calcio.`}
         </div>
       </div>
     </div>

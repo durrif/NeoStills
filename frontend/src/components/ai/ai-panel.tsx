@@ -286,7 +286,7 @@ export function AiPanel() {
       className="fixed inset-0 z-[9999] flex flex-col"
       role="dialog"
       aria-modal="true"
-      aria-label="Brewmaster AI Agent"
+      aria-label={t('ai:assistant_name')}
     >
       {/* Dark blurred backdrop */}
       <div className="absolute inset-0 bg-black/85 backdrop-blur-2xl" />
@@ -306,7 +306,7 @@ export function AiPanel() {
         {/* Top bar — name, status, controls */}
         <div className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 pt-3 md:pt-4 pb-1">
           <div className="flex items-center gap-3">
-            <h2 className="text-base md:text-lg font-display font-semibold text-text-primary">Brewmaster</h2>
+            <h2 className="text-base md:text-lg font-display font-semibold text-text-primary">{t('ai:assistant_name')}</h2>
             <div className={cn(
               'w-2 h-2 rounded-full',
               isSpeaking ? 'bg-accent-purple animate-pulse' :
@@ -326,7 +326,7 @@ export function AiPanel() {
               </div>
             )}
             {isStreaming && !isSpeaking && (
-              <span className="text-xs text-accent-amber animate-pulse">Pensando...</span>
+              <span className="text-xs text-accent-amber animate-pulse">{t('common:ai.thinking')}</span>
             )}
           </div>
           <div className="flex items-center gap-1.5 md:gap-2">
@@ -456,8 +456,9 @@ export function AiPanel() {
   )
 }
 
-/** Large avatar hero — Brewmaster takes center stage as the protagonist */
+/** Large avatar hero for the distillery assistant */
 function AvatarHero({ isSpeaking, isStreaming }: { isSpeaking: boolean; isStreaming: boolean }) {
+  const { t } = useTranslation('ai')
   const { config } = useAvatarStore()
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -560,7 +561,7 @@ function AvatarHero({ isSpeaking, isStreaming }: { isSpeaking: boolean; isStream
           )}>
             <img
               src={config.imageUrl!}
-              alt="Brewmaster"
+              alt={t('ai:assistant_name')}
               className="w-full h-full object-cover object-top rounded-t-3xl"
             />
           </div>

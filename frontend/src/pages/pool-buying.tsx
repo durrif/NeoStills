@@ -29,28 +29,28 @@ const DEMO_PARTICIPANTS: PoolParticipant[] = [
 const DEMO_POOLS: PoolOrder[] = [
   {
     id: 'pool-1',
-    title: 'Pedido Malta — Weyermann',
+    title: 'Pedido cereales — base whiskey',
     supplier: 'brouwland',
     organizer: DEMO_PARTICIPANTS[0]!,
     participants: DEMO_PARTICIPANTS.slice(0, 3),
     items: [
       {
         id: 'pi-1',
-        name: 'Pilsner Malt 25kg',
+        name: 'Malta pilsner 25kg',
         unit: 'saco',
         unitPrice: 32.50,
         quantities: { me: 1, ana: 1, luis: 1 },
       },
       {
         id: 'pi-2',
-        name: 'Munich Malt 25kg',
+        name: 'Maíz laminado 25kg',
         unit: 'saco',
         unitPrice: 35.00,
         quantities: { me: 1, pedro: 1 },
       },
       {
         id: 'pi-3',
-        name: 'CaraMunich III 5kg',
+        name: 'Centeno 5kg',
         unit: 'bolsa',
         unitPrice: 8.90,
         quantities: { me: 2, ana: 1, luis: 1 },
@@ -69,28 +69,28 @@ const DEMO_POOLS: PoolOrder[] = [
   },
   {
     id: 'pool-2',
-    title: 'Lúpulos US — Pedido trimestral',
+    title: 'Botánicos y cítricos — pedido trimestral',
     supplier: 'latiendadelcervecero',
     organizer: DEMO_PARTICIPANTS[1]!,
     participants: DEMO_PARTICIPANTS.slice(0, 4),
     items: [
       {
         id: 'pi-4',
-        name: 'Citra 100g',
+        name: 'Enebro 1kg',
         unit: 'bolsa',
         unitPrice: 4.50,
         quantities: { me: 3, ana: 2, luis: 2, pedro: 1 },
       },
       {
         id: 'pi-5',
-        name: 'Mosaic 100g',
+        name: 'Coriandro 1kg',
         unit: 'bolsa',
         unitPrice: 4.80,
         quantities: { me: 2, ana: 3, pedro: 2 },
       },
       {
         id: 'pi-6',
-        name: 'Simcoe 100g',
+        name: 'Piel de naranja seca 500g',
         unit: 'bolsa',
         unitPrice: 4.20,
         quantities: { me: 1, luis: 3 },
@@ -102,7 +102,7 @@ const DEMO_POOLS: PoolOrder[] = [
     individualCostEstimate: 103.60,
     savingsPercent: 19.1,
     zone: 'Madrid',
-    deliveryPoint: 'Tienda Cervecera — Malasaña 14, Madrid',
+    deliveryPoint: 'Punto de recogida — Malasaña 14, Madrid',
     closingDate: '2026-04-05',
     estimatedDelivery: '2026-04-08',
     createdAt: '2026-03-20',
@@ -360,11 +360,11 @@ function AISuggestion() {
         <div className="text-xs space-y-1">
           <p className="text-text-primary font-medium">Sugerencia AI</p>
           <p className="text-text-secondary leading-relaxed">
-            Si 2 brewers más se unen al pool de maltas, alcanzáis el tier mayorista de Brouwland (−15%).
-            Comparte el enlace para llegar a cerveceros cercanos.
+            Si 2 destiladores más se unen al pool de cereales, alcanzáis el tier mayorista de Brouwland (−15%).
+            Comparte el enlace para llegar a destiladores cercanos.
           </p>
           <button className="flex items-center gap-1 text-accent-amber hover:text-accent-amber/80 transition-colors mt-1">
-            <Share2 size={12} /> Compartir con brewers cercanos
+            <Share2 size={12} /> Compartir con destiladores cercanos
           </button>
         </div>
       </div>
@@ -399,7 +399,7 @@ function ReverseDemandCard() {
         <div className="flex items-center gap-2 p-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
           <span className="text-xs">🇪🇸</span>
           <p className="text-xs text-text-primary flex-1">
-            <span className="text-blue-400 font-medium">La Tienda del Cervecero</span> — envío gratis para pools {'>'}80€
+            <span className="text-blue-400 font-medium">La Tienda del Destilador</span> — envío gratis para pools {'>'}80€
           </p>
         </div>
       </div>
@@ -463,7 +463,7 @@ export default function PoolBuyingPage() {
             {t('nav.pool_buying')}
           </h1>
           <p className="page-header__subtitle">
-            Agrupa pedidos con cerveceros de tu zona para ahorrar en envíos y conseguir precios mayoristas
+            Agrupa pedidos con destiladores de tu zona para ahorrar en envíos y conseguir mejores escalados de compra
           </p>
         </div>
 
