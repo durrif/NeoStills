@@ -1227,7 +1227,7 @@ export default function KeezerPage() {
   useUIStore()
 
   const [activeTab, setActiveTab] = useState<TabId>('all')
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | '3d'>('grid')
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | '3d'>('3d')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<VesselStatus | 'all'>('all')
   const [selectedVessel, setSelectedVessel] = useState<AgingVessel | null>(null)
